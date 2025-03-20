@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import { Star, Zap, Trophy, Crown } from 'lucide-react';
 

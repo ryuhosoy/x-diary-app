@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import { Calendar, Clock, Edit3 } from 'lucide-react';
 
