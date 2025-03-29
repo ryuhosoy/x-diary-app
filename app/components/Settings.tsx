@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Bell, Globe, Lock, User, Moon, Sun, Trash2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Bell, Globe, Lock, User, Moon, Sun, Trash2 } from "lucide-react";
 
 export default function SettingsPage() {
   const [darkMode, setDarkMode] = useState(false);
@@ -17,7 +17,7 @@ export default function SettingsPage() {
             <User className="text-gray-600 mr-2" size={20} />
             <h3 className="text-lg font-semibold">Account Settings</h3>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -29,7 +29,7 @@ export default function SettingsPage() {
                 placeholder="Your display name"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -68,10 +68,23 @@ export default function SettingsPage() {
 
           <div className="space-y-4">
             {[
-              { label: 'Post Published Notifications', description: 'Get notified when your scheduled posts are published' },
-              { label: 'Engagement Notifications', description: 'Get notified about likes, retweets, and mentions' },
-              { label: 'Analytics Reports', description: 'Receive weekly analytics reports' },
-              { label: 'Email Notifications', description: 'Receive notifications via email' }
+              {
+                label: "Post Published Notifications",
+                description:
+                  "Get notified when your scheduled posts are published",
+              },
+              {
+                label: "Engagement Notifications",
+                description: "Get notified about likes, retweets, and mentions",
+              },
+              {
+                label: "Analytics Reports",
+                description: "Receive weekly analytics reports",
+              },
+              {
+                label: "Email Notifications",
+                description: "Receive notifications via email",
+              },
             ].map((setting, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div>
@@ -101,7 +114,9 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-medium">Dark Mode</h4>
-              <p className="text-sm text-gray-600">Switch between light and dark themes</p>
+              <p className="text-sm text-gray-600">
+                Switch between light and dark themes
+              </p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -141,7 +156,9 @@ export default function SettingsPage() {
               </label>
               <select className="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                 <option value="Asia/Tokyo">Tokyo (GMT+9)</option>
-                <option value="America/Los_Angeles">Pacific Time (GMT-8)</option>
+                <option value="America/Los_Angeles">
+                  Pacific Time (GMT-8)
+                </option>
                 <option value="America/New_York">Eastern Time (GMT-5)</option>
                 <option value="Europe/London">London (GMT+0)</option>
               </select>
@@ -160,7 +177,9 @@ export default function SettingsPage() {
             <button className="w-full flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50">
               <div>
                 <h4 className="font-medium">Change Password</h4>
-                <p className="text-sm text-gray-600">Update your account password</p>
+                <p className="text-sm text-gray-600">
+                  Update your account password
+                </p>
               </div>
               <span className="text-blue-600">→</span>
             </button>
@@ -168,7 +187,9 @@ export default function SettingsPage() {
             <button className="w-full flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50">
               <div>
                 <h4 className="font-medium">Two-Factor Authentication</h4>
-                <p className="text-sm text-gray-600">Add an extra layer of security</p>
+                <p className="text-sm text-gray-600">
+                  Add an extra layer of security
+                </p>
               </div>
               <span className="text-blue-600">→</span>
             </button>
@@ -186,7 +207,9 @@ export default function SettingsPage() {
             <button className="w-full flex items-center justify-between p-4 rounded-lg border border-red-200 hover:bg-red-50">
               <div>
                 <h4 className="font-medium text-red-600">Delete Account</h4>
-                <p className="text-sm text-red-600">Permanently delete your account and all data</p>
+                <p className="text-sm text-red-600">
+                  Permanently delete your account and all data
+                </p>
               </div>
               <Trash2 className="text-red-600" size={18} />
             </button>

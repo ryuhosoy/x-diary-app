@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { Menu, Edit3, TrendingUp, Clock, Star, Settings, LogOut } from 'lucide-react';
-
+import { signOut } from 'next-auth/react';
+import { redirect, useRouter } from 'next/navigation';
 type SidebarProps = {
   showSidebar: boolean;
   setShowSidebar: (show: boolean) => void;
@@ -11,6 +12,7 @@ type SidebarProps = {
 };
 
 export function Sidebar({ showSidebar, setShowSidebar, currentPage, setCurrentPage }: SidebarProps) {
+  const router = useRouter();
   const links = [
     { id: 'write', label: 'Write Diary', icon: Edit3 },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp },
@@ -18,6 +20,15 @@ export function Sidebar({ showSidebar, setShowSidebar, currentPage, setCurrentPa
     { id: 'premium', label: 'Premium', icon: Star },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
+
+  const handleLogout = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    const result = await signOut();
+
+    if (result) {
+      router.push("/login");
+    }
+  };
 
   return (
     <div className={`${showSidebar ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 p-4 transition-all duration-300 h-screen fixed`}>
@@ -47,7 +58,7 @@ export function Sidebar({ showSidebar, setShowSidebar, currentPage, setCurrentPa
       </nav>
 
       <div className="absolute bottom-4 space-y-2 w-full pr-4">
-        <button className="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 text-red-600">
+        <button className="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 text-red-600" onClick={handleLogout}>
           <LogOut size={20} />
           {showSidebar && <span className="ml-3">Logout</span>}
         </button>
