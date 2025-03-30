@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Menu, Edit3, TrendingUp, Clock, Star, Settings, LogOut } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 type SidebarProps = {
   showSidebar: boolean;
@@ -11,7 +10,12 @@ type SidebarProps = {
   setCurrentPage: (page: string) => void;
 };
 
-export function Sidebar({ showSidebar, setShowSidebar, currentPage, setCurrentPage }: SidebarProps) {
+export default function Sidebar({
+  showSidebar,
+  setShowSidebar,
+  currentPage,
+  setCurrentPage
+}: SidebarProps) {
   const router = useRouter();
   const links = [
     { id: 'write', label: 'Write Diary', icon: Edit3 },
@@ -21,12 +25,20 @@ export function Sidebar({ showSidebar, setShowSidebar, currentPage, setCurrentPa
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
-  const handleLogout = async (event: React.MouseEvent) => {
-    event.preventDefault();
-    const result = await signOut();
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
 
-    if (result) {
-      router.push("/login");
+      if (response.ok) {
+        // ログアウト成功時の処理
+        router.push("/login");
+      } else {
+        console.error('ログアウトに失敗しました');
+      }
+    } catch (error) {
+      console.error('ログアウトエラー:', error);
     }
   };
 

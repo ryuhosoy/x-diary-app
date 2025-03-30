@@ -14,8 +14,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(nextAuthOptions);
-  console.log("layout session", session);
+  // const session = await getServerSession(nextAuthOptions);
+  // console.log("layout session", session);
 
   return (
     <html lang="en">

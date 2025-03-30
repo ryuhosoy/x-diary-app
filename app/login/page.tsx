@@ -1,28 +1,37 @@
 "use client";
-import { useEffect } from "react";
-import { useSession, signIn } from "next-auth/react";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
-//   const { data: session, status } = useSession();
-//   const router = useRouter()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
 
-//   useEffect(() => {
-//     // ログイン済みの場合はTOPページにリダイレクト
-//     if (status === "authenticated") {
-//       router.push("/");
-//     }
-//   }, []);
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/auth/twitter');
+      const data = await response.json();
+      
+      // レスポンスからクッキーを取得
+      const cookies = response.headers.get('set-cookie');
+      if (cookies) {
+        // クッキーを解析して保存
+        const cookieParts = cookies.split(';');
+        const oauthToken = cookieParts.find(part => part.trim().startsWith('oauth_token='));
+        const oauthTokenSecret = cookieParts.find(part => part.trim().startsWith('oauth_token_secret='));
+        
+        if (oauthToken && oauthTokenSecret) {
+          document.cookie = oauthToken;
+          document.cookie = oauthTokenSecret;
+        }
+      }
 
-  const handleLogin = (provider: string) => async (event: React.MouseEvent) => {
-    event.preventDefault();
-    const result = await signIn(provider);
-    console.log("handleLogin result", result);
-
-    if (result) {
-      router.push("/");
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('ログインエラー:', error);
     }
   };
 
@@ -42,9 +51,15 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-4">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+              {error === 'invalid_request' && '無効なリクエストです'}
+              {error === 'auth_failed' && '認証に失敗しました'}
+            </div>
+          )}
           <div>
             <button
-            //   onClick={handleLogin("twitter")}
+              onClick={handleLogin}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Log In with X

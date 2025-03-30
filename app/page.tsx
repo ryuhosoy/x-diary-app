@@ -1,28 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sidebar } from "./components/Sidebar";
 import WritePage from "./components/Write";
 import AnalyticsPage from "./components/Analytics";
 import SchedulePage from "./components/Schedule";
 import PremiumPage from "./components/Premium";
 import SettingsPage from "./components/Settings";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
   const [currentPage, setCurrentPage] = useState('write');
-  const { data: session } = useSession()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!session) {
-      router.push('/login')
-    } else {
-      console.log('session', session)
-    }
-  }, [])
 
   const renderContent = () => {
     switch (currentPage) {
@@ -43,7 +31,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar 
+      <Sidebar
         showSidebar={showSidebar} 
         setShowSidebar={setShowSidebar}
         currentPage={currentPage}
