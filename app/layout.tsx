@@ -20,9 +20,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProviders session={session}>
+        {/* <SessionProviders session={session}> */}
           <div className="min-h-screen bg-gray-50 flex">{children}</div>
-        </SessionProviders>
+        {/* </SessionProviders> */}
       </body>
     </html>
   );

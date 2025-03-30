@@ -1,10 +1,29 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import NotificationsDropdown from '../components/NotificationsDropdown';
 
 export default function WritePage() {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    console.log("text", text);
+  }, [text]);
+
+  const handlePostTweet = async () => {
+    const response = await fetch('/api/postTweet', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+
+    if (response.ok) {
+      console.log('Tweet posted successfully');
+    } else {
+      console.error('Failed to post tweet');
+    }
+    
+  }
 
   return (
     <div className="flex-1 p-8">
@@ -35,6 +54,8 @@ export default function WritePage() {
           <textarea 
             className="w-full h-48 resize-none border-0 focus:ring-0 text-lg"
             placeholder="What's on your mind today?"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
           ></textarea>
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="flex items-center space-x-4">
@@ -49,7 +70,7 @@ export default function WritePage() {
                 <option>Post Now</option>
               </select>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700" onClick={handlePostTweet}>
               Schedule Post
             </button>
           </div>

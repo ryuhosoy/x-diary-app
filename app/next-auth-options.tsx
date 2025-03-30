@@ -7,8 +7,8 @@ export const nextAuthOptions: NextAuthOptions = {
   secret: "yhTNYOrBQon8CxpYGo/tp7tOmTsKvOn36D9wFABczYk=",
   providers: [
     TwitterProvider({
-      clientId: "gAPaMF89HYP5ph3iLi6CDpLbh",
-      clientSecret: "wygBmxJ8sKQQgubUjE7UbOlAAFlYyA0jg0lhOMaFxBRiFh9tZD",
+      clientId: "NL8qcuwBDmDWYfNajRhsZXYN3",
+      clientSecret: "ZtqHZHtDKBR4okkxFegDWUphS7TY9TldZtotNJvyUPTWjtSGJJ",
       version: "1.0a",
     }),
   ],
@@ -29,13 +29,14 @@ export const nextAuthOptions: NextAuthOptions = {
       return token;
     },
     session: ({ session, token }) => {
-      // console.log("in session", { session, token });
-      
+
       return {
         ...session,
         user: {
           ...session.user,
           role: token.role,
+          accessToken: token.accessToken,
+          accessTokenSecret: token.accessTokenSecret
         },
       };
     },

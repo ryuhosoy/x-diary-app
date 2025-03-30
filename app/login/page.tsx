@@ -1,28 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter()
+//   const { data: session, status } = useSession();
+//   const router = useRouter()
 
 //   useEffect(() => {
 //     // ログイン済みの場合はTOPページにリダイレクト
 //     if (status === "authenticated") {
-//       redirect("/");
+//       router.push("/");
 //     }
-//   }, [session, status]);
-
-  useEffect(() => {
-    // ログイン済みの場合はTOPページにリダイレクト
-    if (status === "authenticated") {
-      router.push("/");
-    }
-  }, []);
+//   }, []);
 
   const handleLogin = (provider: string) => async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -52,7 +44,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-4">
           <div>
             <button
-              onClick={handleLogin("twitter")}
+            //   onClick={handleLogin("twitter")}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Log In with X
