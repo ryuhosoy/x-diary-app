@@ -12,21 +12,6 @@ export default function LoginPage() {
     try {
       const response = await fetch('/api/auth/twitter');
       const data = await response.json();
-      
-      // レスポンスからクッキーを取得
-      const cookies = response.headers.get('set-cookie');
-      if (cookies) {
-        // クッキーを解析して保存
-        const cookieParts = cookies.split(';');
-        const oauthToken = cookieParts.find(part => part.trim().startsWith('oauth_token='));
-        const oauthTokenSecret = cookieParts.find(part => part.trim().startsWith('oauth_token_secret='));
-        
-        if (oauthToken && oauthTokenSecret) {
-          document.cookie = oauthToken;
-          document.cookie = oauthTokenSecret;
-        }
-      }
-
       if (data.url) {
         window.location.href = data.url;
       }

@@ -45,20 +45,6 @@ export async function GET(req: NextRequest) {
         `${process.env.NEXT_PUBLIC_APP_URL}`
       );
 
-      response.cookies.set("twitter_access_token", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-
-      response.cookies.set("twitter_access_secret", accessSecret, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-
       const userResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user`);
       const userData = await userResponse.json();
       console.log('ログインユーザー情報:', userData);

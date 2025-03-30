@@ -28,6 +28,8 @@ export async function GET(req: NextRequest) {
       maxAge: 60 * 60 * 24 // 24時間
     });
 
+    
+
     return response;
   } catch (error) {
     console.error('Twitter認証エラー:', error);
