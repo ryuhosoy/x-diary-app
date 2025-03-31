@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
                     </span>
                   </div>
                 </div>
-                <p className="text-gray-800">Just launched our new feature! The response has been overwhelming. Thank you to everyone who's been part of this journey! #Tech #Innovation</p>
+                <p className="text-gray-800">Just launched our new feature! The response has been overwhelming. Thank you to everyone whos been part of this journey! #Tech #Innovation</p>
               </div>
             ))}
           </div>

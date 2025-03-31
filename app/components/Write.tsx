@@ -53,7 +53,7 @@ export default function WritePage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <textarea 
             className="w-full h-48 resize-none border-0 focus:ring-0 text-lg"
-            placeholder="What's on your mind today?"
+            placeholder="Whats on your mind today?"
             value={text}
             onChange={(e) => setText(e.target.value)}
           ></textarea>
@@ -90,7 +90,7 @@ export default function WritePage() {
                     <span>👁️ 1.2k</span>
                   </div>
                 </div>
-                <p className="text-gray-800">Had an amazing breakthrough today with the new project! The team's hard work is finally paying off. #coding #success</p>
+                <p className="text-gray-800">Had an amazing breakthrough today with the new project! The teams hard work is finally paying off. #coding #success</p>
               </div>
             ))}
           </div>
