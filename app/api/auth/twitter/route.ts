@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { requestClient } from '@/app/lib/twitter';
 import { cookies } from 'next/headers';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_SECRET_KEY) {
       console.error('Twitter API credentials are not set');

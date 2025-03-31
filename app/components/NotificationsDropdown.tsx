@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, MessageCircle, Heart, UserPlus, Share2 } from 'lucide-react';
+import { MessageCircle, Heart, UserPlus, Share2 } from 'lucide-react';
 
 interface NotificationsDropdownProps {
   isOpen: boolean;

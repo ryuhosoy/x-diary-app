@@ -11,15 +11,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const session = await getServerSession(nextAuthOptions);
-  // console.log("layout session", session);
 
   return (
     <html lang="en">
       <body>
-        {/* <SessionProviders session={session}> */}
         <div className="min-h-screen bg-gray-50 flex">{children}</div>
-        {/* </SessionProviders> */}
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Calendar, Clock, Edit3 } from 'lucide-react';
+import { Calendar, Edit3 } from 'lucide-react';
 
 export default function SchedulePage() {
   return (

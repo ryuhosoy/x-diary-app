@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.nextUrl.searchParams.get("oauth_token") as string;
     const verifier = req.nextUrl.searchParams.get("oauth_verifier") as string;
-    const savedToken = req.cookies.get("oauth_token")?.value;
     const savedSecret = req.cookies.get("oauth_token_secret")?.value;
 
     if (!token || !verifier) {
