@@ -1,9 +1,10 @@
 "use client";
+import { Suspense } from 'react';
 import { X } from "lucide-react";
 import Link from "next/link";
 
-export default function LoginPage() {
-
+// SearchParamsを使用するコンポーネントを分離
+function LoginContent() {
   const handleLogin = async () => {
     try {
       const response = await fetch('/api/auth/twitter');
@@ -32,12 +33,6 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-4">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-              {error === 'invalid_request' && '無効なリクエストです'}
-              {error === 'auth_failed' && '認証に失敗しました'}
-            </div>
-          )}
           <div>
             <button
               onClick={handleLogin}
@@ -62,5 +57,14 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// メインのページコンポーネント
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
