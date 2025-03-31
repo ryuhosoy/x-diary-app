@@ -1,10 +1,9 @@
 "use client";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 

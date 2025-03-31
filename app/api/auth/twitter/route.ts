@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requestClient } from '@/src/lib/twitter';
+import { requestClient } from '@/app/lib/twitter';
+import { cookies } from 'next/headers';
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,21 +15,21 @@ export async function GET(req: NextRequest) {
 
     const response = NextResponse.json({ url: authLink.url });
 
-    response.cookies.set('oauth_token', authLink.oauth_token, {
+    const cookieStore = await cookies();
+
+    cookieStore.set('oauth_token', authLink.oauth_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 // 24時間
+    });
+
+    cookieStore.set('oauth_token_secret', authLink.oauth_token_secret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'lax', 
       maxAge: 60 * 60 * 24 // 24時間
     });
-
-    response.cookies.set('oauth_token_secret', authLink.oauth_token_secret, {
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 // 24時間
-    });
-
-    
 
     return response;
   } catch (error) {

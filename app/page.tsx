@@ -11,6 +11,18 @@ import Sidebar from "./components/Sidebar";
 export default function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
   const [currentPage, setCurrentPage] = useState('write');
+  
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    const userResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/user`
+    );
+    const userData = await userResponse.json();
+    console.log("ログインユーザー情報:", userData);
+  }
 
   const renderContent = () => {
     switch (currentPage) {

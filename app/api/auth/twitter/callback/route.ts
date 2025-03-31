@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { TOKENS } from "@/src/lib/twitter";
+import { TOKENS } from "@/app/lib/twitter";
 import { cookies } from "next/headers";
 import { TwitterApi } from "twitter-api-v2";
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("req.nextUrl.searchParams", req.nextUrl.searchParams);
-    console.log("req.cookies", req.cookies);
-    
-    const token = req.nextUrl.searchParams.get('oauth_token') as string;
-    const verifier = req.nextUrl.searchParams.get('oauth_verifier') as string;
-    const savedToken = req.cookies.get('oauth_token')?.value;
-    const savedSecret = req.cookies.get('oauth_token_secret')?.value;
-    
-    console.log("savedToken", savedToken);
-    console.log("savedSecret", savedSecret);
+    const token = req.nextUrl.searchParams.get("oauth_token") as string;
+    const verifier = req.nextUrl.searchParams.get("oauth_verifier") as string;
+    const savedToken = req.cookies.get("oauth_token")?.value;
+    const savedSecret = req.cookies.get("oauth_token_secret")?.value;
 
     if (!token || !verifier) {
       console.error("OAuth tokens missing");
@@ -23,10 +17,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // デバッグ用のログ
-    console.log("OAuth Token:", token);
-    console.log("OAuth Verifier:", verifier);
-
     try {
       const tempClient = new TwitterApi({
         ...TOKENS,
@@ -34,8 +24,26 @@ export async function GET(req: NextRequest) {
         accessSecret: savedSecret,
       });
 
-      const { accessToken, accessSecret, screenName, userId } =
-        await tempClient.login(verifier);
+      const { accessToken, accessSecret, screenName, userId } = await tempClient.login(verifier);
+
+      const cookieStore = await cookies();
+
+      cookieStore.set('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 // 24時間
+      });
+  
+      cookieStore.set('accessSecret', accessSecret, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax', 
+        maxAge: 60 * 60 * 24 // 24時間
+      });
+
+      console.log('accessToken in callback', accessToken);
+      console.log('accessSecret in callback', accessSecret);
 
       // デバッグ用のログ
       console.log("Login successful:", { screenName, userId });
@@ -45,9 +53,11 @@ export async function GET(req: NextRequest) {
         `${process.env.NEXT_PUBLIC_APP_URL}`
       );
 
-      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user`);
-      const userData = await userResponse.json();
-      console.log('ログインユーザー情報:', userData);
+    //   const userResponse = await fetch(
+    //     `${process.env.NEXT_PUBLIC_APP_URL}/api/user`
+    //   );
+    //   const userData = await userResponse.json();
+    //   console.log("ログインユーザー情報:", userData);
 
       return response;
     } catch (loginError) {
