@@ -1,11 +1,8 @@
 "use client";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get('error');
 
   const handleLogin = async () => {
     try {
