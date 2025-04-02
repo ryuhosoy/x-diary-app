@@ -10,31 +10,33 @@ import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
-  const [currentPage, setCurrentPage] = useState('write');
-  
-  useEffect(() => {
-    getUser();
-  }, []);
+  const [currentPage, setCurrentPage] = useState("write");
 
-  const getUser = async () => {
-    const userResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/user`
-    );
-    const userData = await userResponse.json();
-    console.log("ログインユーザー情報:", userData);
-  }
+  // const { userId, username, clearUserInfo } = useUser();
+
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
+
+  // const getUser = async () => {
+  //   const userResponse = await fetch(
+  //     `${process.env.NEXT_PUBLIC_APP_URL}/api/user`
+  //   );
+  //   const userData = await userResponse.json();
+  //   console.log("ログインユーザー情報:", userData);
+  // };
 
   const renderContent = () => {
     switch (currentPage) {
-      case 'write':
+      case "write":
         return <WritePage />;
-      case 'analytics':
+      case "analytics":
         return <AnalyticsPage />;
-      case 'schedule':
+      case "schedule":
         return <SchedulePage />;
-      case 'premium':
+      case "premium":
         return <PremiumPage />;
-      case 'settings':
+      case "settings":
         return <SettingsPage />;
       default:
         return <WritePage />;
@@ -44,15 +46,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar
-        showSidebar={showSidebar} 
+        showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-      <div className={`flex-1 ${showSidebar ? 'ml-64' : 'ml-20'} transition-all duration-300`}>
-        <main>
-          {renderContent()}
-        </main>
+      <div
+        className={`flex-1 ${
+          showSidebar ? "ml-64" : "ml-20"
+        } transition-all duration-300`}
+      >
+        <main>{renderContent()}</main>
       </div>
     </div>
   );

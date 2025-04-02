@@ -1,6 +1,7 @@
 import { TwitterApi } from "twitter-api-v2";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = await cookies();

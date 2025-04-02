@@ -11,17 +11,18 @@ export default function WritePage() {
     console.log("text", text);
   }, [text]);
 
-  const handlePostTweet = async () => {
-    const response = await fetch('/api/postTweet', {
-      method: 'POST',
-      body: JSON.stringify({ text }),
-    });
+  const handleInsertScheduledPosts = async () => {
+    // const response = await fetch('/api/postTweet', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ text }),
+    // });
 
-    if (response.ok) {
-      console.log('Tweet posted successfully');
-    } else {
-      console.error('Failed to post tweet');
-    }
+    // if (response.ok) {
+    //   console.log('Tweet posted successfully');
+    // } else {
+    //   console.error('Failed to post tweet');
+    // }
+    
     
   }
 
@@ -70,7 +71,7 @@ export default function WritePage() {
                 <option>Post Now</option>
               </select>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700" onClick={handlePostTweet}>
+            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700" onClick={handleInsertScheduledPosts}>
               Schedule Post
             </button>
           </div>

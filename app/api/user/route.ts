@@ -23,11 +23,9 @@ export async function GET() {
       accessToken: accessToken,
       accessSecret: accessSecret,
     });
-
-    console.log("userClient", userClient);
-
+    
     // ユーザー情報を取得
-    const me = await userClient.v2.me();
+    const me = await userClient.currentUserV2();
 
     return NextResponse.json(me.data);
   } catch (error) {
