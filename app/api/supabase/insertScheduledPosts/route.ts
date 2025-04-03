@@ -1,29 +1,30 @@
 import { supabase } from "@/app/utils/supabase";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
 // API Routeとしてエクスポートされる関数
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const { value } = req.body;
+export async function POST(req: NextRequest) {
+  const { text, userId } = await req.json();
 
-    // supabaseを使用してデータを挿入
-    try {
-      const { data, error } = await supabase
-        .from("scheduled_posts")
-        .insert([{ value }]);
+  try {
 
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
+    console.log("text", text);
+    console.log("userId", userId);
+    const { data, error } = await supabase
+      .from("scheduled_posts")
+      .insert([{ 
+        user_id: parseInt(userId),
+        post_content: text,
+      }]);
 
-      // 挿入したデータを返す
-      return res.status(200).json({ data: data ? data[0] : null });
-    } catch (err) {
-      // エラーハンドリング
-      return res.status(500).json({ error: "Something went wrong." });
+    if (error) {
+      console.error("エラー:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    return NextResponse.json({ data: data ? data[0] : null });
+
+  } catch (err) {
+    console.error("エラー:", err);
+    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }
 }

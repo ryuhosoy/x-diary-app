@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import NotificationsDropdown from '../components/NotificationsDropdown';
+import { useUser } from '../context/UserContext';
 
 export default function WritePage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [text, setText] = useState('');
+  const { userId } = useUser();
 
   useEffect(() => {
     console.log("text", text);
@@ -22,8 +24,17 @@ export default function WritePage() {
     // } else {
     //   console.error('Failed to post tweet');
     // }
-    
-    
+
+    const response = await fetch('/api/supabase/insertScheduledPosts', {
+      method: 'POST',
+      body: JSON.stringify({ text, userId }),
+    });
+
+    if (response.ok) {
+      console.log('Scheduled posts inserted successfully');
+    } else {
+      console.error('Failed to insert scheduled posts');
+    }
   }
 
   return (

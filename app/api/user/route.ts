@@ -23,11 +23,15 @@ export async function GET() {
       accessToken: accessToken,
       accessSecret: accessSecret,
     });
+
+    console.log("userClient", userClient);
     
     // ユーザー情報を取得
-    const me = await userClient.currentUserV2();
+    const currentUser = await userClient.currentUserV2();
 
-    return NextResponse.json(me.data);
+    console.log("currentUser", currentUser);
+
+    return NextResponse.json(currentUser.data);
   } catch (error) {
     console.error("ユーザー情報取得エラー:", error);
     return NextResponse.json(
