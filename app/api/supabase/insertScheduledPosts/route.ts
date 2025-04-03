@@ -3,17 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 
 // API Routeとしてエクスポートされる関数
 export async function POST(req: NextRequest) {
-  const { text, userId } = await req.json();
+  const { text, userId, scheduledTime } = await req.json();
 
   try {
-
     console.log("text", text);
     console.log("userId", userId);
+    console.log("scheduledTime", scheduledTime);
+    
     const { data, error } = await supabase
       .from("scheduled_posts")
-      .insert([{ 
+      .insert([{
         user_id: parseInt(userId),
         post_content: text,
+        scheduled_time: scheduledTime,
       }]);
 
     if (error) {

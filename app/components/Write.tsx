@@ -1,41 +1,80 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Calendar, Clock } from 'lucide-react';
 import NotificationsDropdown from '../components/NotificationsDropdown';
 import { useUser } from '../context/UserContext';
 
 export default function WritePage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [text, setText] = useState('');
-  const { userId } = useUser();
+  const { userId, username } = useUser();
+  const [scheduledDateTime, setScheduledDateTime] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate(),
+    hour: new Date().getHours(),
+    minute: '00',
+    period: 'AM'
+  });
+
+  // Generate options for select elements
+  const years = Array.from({length: 3}, (_, i) => new Date().getFullYear() + i);
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const days = Array.from({length: 31}, (_, i) => i + 1);
+  const hours = Array.from({length: 12}, (_, i) => i + 1);
+  const minutes = ['00', '15', '30', '45'];
 
   useEffect(() => {
     console.log("text", text);
   }, [text]);
 
-  const handleInsertScheduledPosts = async () => {
-    // const response = await fetch('/api/postTweet', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ text }),
-    // });
+  const handleSchedulePost = async () => {
+    if (!userId || !username || !text) return;
 
-    // if (response.ok) {
-    //   console.log('Tweet posted successfully');
-    // } else {
-    //   console.error('Failed to post tweet');
-    // }
+    try {
+      let hour = parseInt(scheduledDateTime.hour.toString());
+      if (scheduledDateTime.period === 'PM' && hour !== 12) hour += 12;
+      if (scheduledDateTime.period === 'AM' && hour === 12) hour = 0;
 
-    const response = await fetch('/api/supabase/insertScheduledPosts', {
-      method: 'POST',
-      body: JSON.stringify({ text, userId }),
-    });
+      const scheduledDate = new Date(
+        scheduledDateTime.year,
+        scheduledDateTime.month - 1,
+        scheduledDateTime.day,
+        hour,
+        parseInt(scheduledDateTime.minute)
+      );
 
-    if (response.ok) {
-      console.log('Scheduled posts inserted successfully');
-    } else {
-      console.error('Failed to insert scheduled posts');
+      console.log("scheduledDateTime in handleSchedulePost", scheduledDateTime);
+      console.log("scheduledDate in handleSchedulePost", scheduledDate);
+      console.log("scheduledDate.toISOString() in handleSchedulePost", scheduledDate.toISOString());
+
+      const response = await fetch('/api/supabase/insertScheduledPosts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          text,
+          scheduledTime: scheduledDate.toISOString(),
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to schedule post');
+
+      setText('');
+    } catch (error) {
+      console.error('Error:', error);
     }
-  }
+  };
+
+  const formatScheduledTime = () => {
+    const monthName = months[scheduledDateTime.month];
+    return `Scheduled for ${monthName} ${scheduledDateTime.day}, ${scheduledDateTime.year} at ${scheduledDateTime.hour}:${scheduledDateTime.minute} ${scheduledDateTime.period}`;
+  };
 
   return (
     <div className="flex-1 p-8">
@@ -61,28 +100,124 @@ export default function WritePage() {
           </div>
         </div>
 
-        {/* Editor */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <textarea 
-            className="w-full h-48 resize-none border-0 focus:ring-0 text-lg"
-            placeholder="Whats on your mind today?"
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-          ></textarea>
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex items-center space-x-4">
-              <select className="border rounded-lg px-3 py-2 text-sm">
-                <option>AI Style: Professional</option>
-                <option>AI Style: Casual</option>
-                <option>AI Style: Engaging</option>
-              </select>
-              <select className="border rounded-lg px-3 py-2 text-sm">
-                <option>Post at: Best Time</option>
-                <option>Post at: Custom Time</option>
-                <option>Post Now</option>
-              </select>
+            placeholder="What's happening?"
+            className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+          />
+
+          <div className="mt-4">
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Year</label>
+                  <select
+                    value={scheduledDateTime.year}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      year: parseInt(e.target.value)
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {years.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Month</label>
+                  <select
+                    value={scheduledDateTime.month}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      month: parseInt(e.target.value)
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {months.map((month, index) => (
+                      <option key={month} value={index}>{month}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Day</label>
+                  <select
+                    value={scheduledDateTime.day}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      day: parseInt(e.target.value)
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {days.map(day => (
+                      <option key={day} value={day}>{day}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Hour</label>
+                  <select
+                    value={scheduledDateTime.hour}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      hour: parseInt(e.target.value)
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {hours.map(hour => (
+                      <option key={hour} value={hour}>{hour}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Minute</label>
+                  <select
+                    value={scheduledDateTime.minute}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      minute: e.target.value
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {minutes.map(minute => (
+                      <option key={minute} value={minute}>{minute}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">AM/PM</label>
+                  <select
+                    value={scheduledDateTime.period}
+                    onChange={(e) => setScheduledDateTime({
+                      ...scheduledDateTime,
+                      period: e.target.value as 'AM' | 'PM'
+                    })}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="text-sm text-gray-600 font-medium mt-4">
+                {formatScheduledTime()}
+              </div>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700" onClick={handleInsertScheduledPosts}>
+
+            <button
+              onClick={handleSchedulePost}
+              disabled={!text}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mt-4"
+            >
               Schedule Post
             </button>
           </div>
