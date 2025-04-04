@@ -1,0 +1,28 @@
+name: Post Scheduled Tweets
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'  # 毎分
+  workflow_dispatch:       # 手動実行も可
+
+jobs:
+  post-tweets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: pnpm install
+      - name: Run scheduler
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          TWITTER_APP_KEY: ${{ secrets.TWITTER_APP_KEY }}
+          TWITTER_APP_SECRET: ${{ secrets.TWITTER_API_SECRET_KEY }}
+        run: node run-post-scheduler.mjs
