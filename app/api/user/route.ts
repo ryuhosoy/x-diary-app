@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { TwitterApi } from "twitter-api-v2";
 import { cookies } from "next/headers";
+import { supabase } from "@/app/utils/supabase";
 
 export async function GET() {
   try {
@@ -25,9 +26,28 @@ export async function GET() {
     });
 
     console.log("userClient", userClient);
-    
+
     // ユーザー情報を取得
     const currentUser = await userClient.currentUserV2();
+
+    if (currentUser.data) {
+      const { data, error } = await supabase
+        .from("users")
+        .upsert([
+          {
+            user_id: currentUser.data.id,
+            username: currentUser.data.username,
+            access_token: accessToken,
+            access_secret: accessSecret,
+          },
+        ], { onConflict: 'user_id' });
+
+      if (error) {
+        console.error("ユーザー情報の更新エラー:", error);
+      } else {
+        console.log("ユーザー情報の更新成功:", data);
+      }
+    }
 
     console.log("currentUser", currentUser);
 

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { TwitterApi } from "twitter-api-v2";
 
 export async function GET(req: NextRequest) {
+
   try {
     const token = req.nextUrl.searchParams.get("oauth_token") as string;
     const verifier = req.nextUrl.searchParams.get("oauth_verifier") as string;

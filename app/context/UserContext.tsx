@@ -15,7 +15,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    // 初期ロード時にユーザー情報を取得
+    // ログインした時のみ読み込むようにする
     const fetchUserInfo = async () => {
       try {
         const response = await fetch('/api/user');
