@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabase.from("scheduled_posts").insert([
       {
-        user_id: parseInt(userId),
+        user_id: userId,
         post_content: text,
         scheduled_time: scheduledTime,
       },
