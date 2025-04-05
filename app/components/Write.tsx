@@ -25,7 +25,7 @@ export default function WritePage() {
   ];
   const days = Array.from({length: 31}, (_, i) => i + 1);
   const hours = Array.from({length: 12}, (_, i) => i + 1);
-  const minutes = ['00', '15', '30', '45'];
+  const minutes = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
   useEffect(() => {
     console.log("text", text);
