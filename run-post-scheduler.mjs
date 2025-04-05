@@ -11,7 +11,7 @@ const now = new Date();
 const nowISO = now.toISOString().slice(0, 16); // 'YYYY-MM-DDTHH:MM' まで比較
 
 async function postScheduledTweets() {
-  console.log("TWITTER_API_KEY  ", process.env.TWITTER_API_KEY);
+  console.log("TWITTER_API_KEY", process.env.TWITTER_API_KEY);
   console.log("TWITTER_API_SECRET_KEY", process.env.TWITTER_API_SECRET_KEY);
   console.log(`🕒 ${nowISO}の予約投稿をチェック中...`);
 
