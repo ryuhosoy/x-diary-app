@@ -2,7 +2,7 @@ name: Post Scheduled Tweets
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # 毎分
+    - cron: '*/5 * * * *'  # 毎分
   workflow_dispatch:       # 手動実行も可
 
 jobs:
