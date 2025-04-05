@@ -49,6 +49,9 @@ async function postScheduledTweets() {
         accessSecret: userData.access_secret,
       });
 
+      console.log("TWITTER_API_KEY  ", process.env.TWITTER_API_KEY);
+      console.log("TWITTER_API_SECRET_KEY", process.env.TWITTER_API_SECRET_KEY);
+
       const tweet = await userTwitterClient.v2.tweet(post.post_content);
       console.log(`🐦 ツイートID: ${tweet.data.id}を投稿しました`);
 
