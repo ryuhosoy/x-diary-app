@@ -60,7 +60,22 @@ async function postScheduledTweets() {
       const tweet = await userTwitterClient.v2.tweet(post.post_content);
       console.log(`🐦 ツイートID: ${tweet.data.id}を投稿しました`);
 
-      // 3. 投稿後、Supabaseから削除
+      // posted_postsテーブルに投稿データを保存
+      const { error: insertError } = await supabase.from("posted_posts").insert({
+        user_id: post.user_id,
+        is_read_in_notifications: false,
+        post_content: post.post_content,
+        posted_post_id: tweet.data.id,
+        posted_time: new Date().toISOString(),
+      });
+
+      if (insertError) {
+        console.error(`❌ 投稿データの保存に失敗しました:`, insertError);
+      } else {
+        console.log(`📝 投稿データを保存しました`);
+      }
+
+      // 3. 投稿後、scheduled_postsから削除
       await supabase.from("scheduled_posts").delete().eq("id", post.id);
 
       console.log(`🗑️ 予約投稿ID: ${post.id}を削除しました`);
