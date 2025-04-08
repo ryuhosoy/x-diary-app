@@ -12,7 +12,7 @@ export async function GET() {
     const authLink = await requestClient.generateAuthLink(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/twitter/callback`,
       { 
-        // forceLogin: true  // これを追加：強制的にログイン画面を表示
+        forceLogin: true  // これを追加：強制的にログイン画面を表示
       }
     );
 
