@@ -13,6 +13,7 @@ interface Notification {
   icon: React.ReactNode;
   message: string;
   time: string;
+  is_read_in_notifications: boolean;
 }
 
 export default function NotificationsDropdown({
@@ -40,6 +41,7 @@ export default function NotificationsDropdown({
         icon: <MessageCircle size={16} className="text-blue-500" />,
         message: `「${post.post_content}」が投稿されました`,
         time: new Date(post.created_at).toLocaleString(),
+        is_read_in_notifications: post.is_read_in_notifications
       }));
 
       setNotifications(formattedNotifications);
@@ -55,7 +57,7 @@ export default function NotificationsDropdown({
         "postgres_changes",
         {
           schema: "public",
-          event: "*",
+          event: "INSERT",
         },
         (payload) => {
           console.log("投稿の変更が検出されました:", payload);
@@ -65,8 +67,9 @@ export default function NotificationsDropdown({
             id: Date.now(),
             type: "post",
             icon: <MessageCircle size={16} className="text-blue-500" />,
-            message: `「${payload}が${payload.eventType}されました`,
+            message: `「${payload.new.post_content}」が投稿されました`,
             time: new Date().toLocaleString(),
+            is_read_in_notifications: false
           };
 
           setNotifications((prev) => [newNotification, ...prev]);
@@ -103,7 +106,21 @@ export default function NotificationsDropdown({
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className="p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer"
+              className={`p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer ${
+                !notification.is_read_in_notifications ? 'bg-blue-50' : ''
+              }`}
+              onClick={async () => {
+                // 通知を既読にする
+                const { data, error } = await supabase
+                  .from('posted_posts')
+                  .update({ is_read_in_notifications: true })
+                  .eq('id', notification.id);
+
+                setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, is_read_in_notifications: true } : n));
+
+                console.log("notification.id", notification.id);
+                console.log("notification are read");
+              }}
             >
               <div className="flex items-start space-x-3">
                 <div className="p-2 bg-gray-50 rounded-full">
@@ -111,7 +128,7 @@ export default function NotificationsDropdown({
                   <MessageCircle size={16} className="text-blue-500" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-800">
+                  <p className={`text-sm ${!notification.is_read_in_notifications ? 'font-semibold text-gray-900' : 'text-gray-800'}`}>
                     {notification.message}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
