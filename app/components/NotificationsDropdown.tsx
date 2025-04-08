@@ -39,7 +39,7 @@ export default function NotificationsDropdown({
         id: post.id,
         type: "post",
         icon: <MessageCircle size={16} className="text-blue-500" />,
-        message: `「${post.post_content}」が投稿されました`,
+        message: `The tweet "${post.post_content}" has been posted`,
         time: new Date(post.created_at).toLocaleString(),
         is_read_in_notifications: post.is_read_in_notifications
       }));
@@ -85,6 +85,23 @@ export default function NotificationsDropdown({
 
   if (!isOpen) return null;
 
+  const handleMarkAllAsRead = async () => {
+    try {
+      // posted_postsテーブルの全ての通知を既読に更新
+      const { error } = await supabase
+        .from('posted_posts')
+        .update({ is_read_in_notifications: true })
+        .eq('is_read_in_notifications', false);
+
+      if (error) throw error;
+
+      // ローカルの通知状態も更新
+      setNotifications(prev => prev.map(n => ({ ...n, is_read_in_notifications: true })));
+    } catch (error) {
+      console.error('通知の一括既読更新に失敗しました:', error);
+    }
+  };
+
   return (
     <>
       <div className="fixed inset-0 z-40" onClick={onClose}></div>
@@ -94,9 +111,7 @@ export default function NotificationsDropdown({
             <h3 className="font-semibold">Notifications</h3>
             <button
               className="text-sm text-blue-600 hover:text-blue-700"
-              onClick={() => {
-                /* Mark all as read */
-              }}
+              onClick={handleMarkAllAsRead}
             >
               Mark all as read
             </button>

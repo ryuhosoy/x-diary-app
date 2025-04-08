@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Bell, Calendar, Clock } from 'lucide-react';
 import NotificationsDropdown from '../components/NotificationsDropdown';
 import { useUser } from '../context/UserContext';
+import { supabase } from '@/app/utils/supabase';
 
 export default function WritePage() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -16,6 +17,7 @@ export default function WritePage() {
     minute: '00',
     period: 'AM'
   });
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
 
   // Generate options for select elements
   const years = Array.from({length: 3}, (_, i) => new Date().getFullYear() + i);
@@ -30,6 +32,46 @@ export default function WritePage() {
   useEffect(() => {
     console.log("text", text);
   }, [text]);
+
+  useEffect(() => {
+    // 初期状態のチェック
+    checkUnreadNotifications();
+
+    // リアルタイムリスナーの設定
+    const changes = supabase
+      .channel("posted_posts")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          event: "*",
+        },
+        (payload) => {
+          console.log("投稿の変更が検出されました:", payload);
+          checkUnreadNotifications(); // 変更があったら未読状態を再チェック
+        }
+      )
+      .subscribe();
+
+    return () => {
+      changes.unsubscribe();
+    };
+  }, []);
+
+  const checkUnreadNotifications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("posted_posts")
+        .select("is_read_in_notifications")
+        .eq("is_read_in_notifications", false);
+
+      if (error) throw error;
+
+      setHasUnreadNotifications(data && data.length > 0);
+    } catch (error) {
+      console.error("未読通知のチェック中にエラーが発生しました:", error);
+    }
+  };
 
   const handleSchedulePost = async () => {
     if (!userId || !username || !text) return;
@@ -91,7 +133,9 @@ export default function WritePage() {
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <Bell size={24} />
-              <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              {hasUnreadNotifications && (
+                <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              )}
             </button>
             <NotificationsDropdown 
               isOpen={showNotifications} 
