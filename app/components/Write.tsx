@@ -18,6 +18,8 @@ export default function WritePage() {
     period: 'AM'
   });
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Generate options for select elements
   const years = Array.from({length: 3}, (_, i) => new Date().getFullYear() + i);
@@ -95,6 +97,33 @@ export default function WritePage() {
       console.log("scheduledDate in handleSchedulePost", scheduledDate);
       console.log("scheduledDate.toISOString() in handleSchedulePost", scheduledDate.toISOString());
 
+      let imageUrl = null;
+      
+      if (selectedImage) {
+        // ファイル名から日本語を除去し、英数字のみに
+        const sanitizedFileName = selectedImage.name
+          .replace(/[^\w\s.-]/g, '') // 英数字、スペース、ドット、ハイフン以外を削除
+          .replace(/\s+/g, '-');     // スペースをハイフンに変換
+
+        // ユニークなファイル名を生成（タイムスタンプを追加）
+        const fileName = `${userId}/${Date.now()}-${sanitizedFileName}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(fileName, selectedImage);
+
+        if (uploadError) throw uploadError;
+
+        // 画像の公開URLを取得
+        const { data: { publicUrl } } = supabase.storage
+          .from('post-images')
+          .getPublicUrl(fileName);
+
+        imageUrl = publicUrl;
+        console.log("imageUrl in handleSchedulePost", imageUrl);
+      }
+
+      // 2. データベースには画像のURLを保存
       const response = await fetch('/api/supabase/insertScheduledPosts', {
         method: 'POST',
         headers: {
@@ -103,13 +132,17 @@ export default function WritePage() {
         body: JSON.stringify({
           userId,
           text,
+          imageUrl,  // URLをテキストとして保存
           scheduledTime: scheduledDate.toISOString(),
         }),
       });
 
       if (!response.ok) throw new Error('Failed to schedule post');
 
+      // 成功したらフォームをリセット
       setText('');
+      setSelectedImage(null);
+      setImagePreview(null);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -118,6 +151,28 @@ export default function WritePage() {
   const formatScheduledTime = () => {
     const monthName = months[scheduledDateTime.month];
     return `Scheduled for ${monthName} ${scheduledDateTime.day}, ${scheduledDateTime.year} at ${scheduledDateTime.hour}:${scheduledDateTime.minute} ${scheduledDateTime.period}`;
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // 画像ファイルかどうかをチェック
+      if (!file.type.startsWith('image/')) {
+        alert('Only image files can be uploaded');
+        return;
+      }
+
+      // ファイルサイズのチェック (20MB = 20 * 1024 * 1024 bytes)
+      if (file.size > 20 * 1024 * 1024) {
+        alert('Image size must be less than 20MB');
+        return;
+      }
+
+      setSelectedImage(file);
+      // プレビュー用のURLを作成
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
   };
 
   return (
@@ -155,6 +210,45 @@ export default function WritePage() {
             className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={4}
           />
+
+          {/* 画像プレビュー */}
+          {imagePreview && (
+            <div className="mt-4 relative">
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                className="max-h-64 rounded-lg object-contain"
+              />
+              <button
+                onClick={() => {
+                  setSelectedImage(null);
+                  setImagePreview(null);
+                  URL.revokeObjectURL(imagePreview);
+                }}
+                className="absolute top-2 right-2 bg-gray-800 bg-opacity-50 text-white rounded-full p-1 hover:bg-opacity-70"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* 画像アップロードボタン */}
+          <div className="mt-4 flex items-center space-x-2">
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              <div className="flex items-center space-x-2 text-blue-500 hover:text-blue-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>Add Image</span>
+              </div>
+            </label>
+          </div>
 
           <div className="mt-4">
             <div className="space-y-4 p-4 bg-gray-50 rounded-lg mt-4">
