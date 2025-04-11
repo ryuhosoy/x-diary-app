@@ -45,6 +45,7 @@ export default function WritePage() {
         {
           schema: "public",
           event: "*",
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           console.log("投稿の変更が検出されました:", payload);
@@ -63,7 +64,8 @@ export default function WritePage() {
       const { data, error } = await supabase
         .from("posted_posts")
         .select("is_read_in_notifications")
-        .eq("is_read_in_notifications", false);
+        .eq("is_read_in_notifications", false)
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -140,6 +142,7 @@ export default function WritePage() {
             <NotificationsDropdown 
               isOpen={showNotifications} 
               onClose={() => setShowNotifications(false)} 
+              userId={userId || ''}
             />
           </div>
         </div>

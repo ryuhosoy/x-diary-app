@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { MessageCircle, Heart, UserPlus, Share2 } from "lucide-react";
 import { supabase } from "@/app/utils/supabase";
+import { useUser } from "../context/UserContext";
 
 interface NotificationsDropdownProps {
   isOpen: boolean;
   onClose: () => void;
+  userId: string;
 }
 
 interface Notification {
   id: number | string;
   type: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode
   message: string;
   time: string;
   is_read_in_notifications: boolean;
@@ -19,33 +21,41 @@ interface Notification {
 export default function NotificationsDropdown({
   isOpen,
   onClose,
+  userId,
 }: NotificationsDropdownProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+    // リアルタイムで通知が追加されたらfetchInitialDataを呼び出し再度レンダリングする
+
+  console.log("userId in notifications", userId);
+
+  const fetchInitialData = async () => {
+    const { data, error } = await supabase
+      .from('posted_posts')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('データの取得に失敗しました:', error);
+      return;
+    }
+
+    const formattedNotifications = data.map(post => ({
+      id: post.id,
+      type: "post",
+      icon: <MessageCircle size={16} className="text-blue-500" />,
+      message: `The tweet "${post.post_content}" has been posted.`,
+      time: new Date(post.created_at).toLocaleString(),
+      is_read_in_notifications: post.is_read_in_notifications
+    }));
+
+    setNotifications(formattedNotifications);
+    console.log("formattedNotifications", formattedNotifications);
+  };
+
   useEffect(() => {
     // 初期データの取得
-    const fetchInitialData = async () => {
-      const { data, error } = await supabase
-        .from('posted_posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('データの取得に失敗しました:', error);
-        return;
-      }
-
-      const formattedNotifications = data.map(post => ({
-        id: post.id,
-        type: "post",
-        icon: <MessageCircle size={16} className="text-blue-500" />,
-        message: `The tweet "${post.post_content}" has been posted`,
-        time: new Date(post.created_at).toLocaleString(),
-        is_read_in_notifications: post.is_read_in_notifications
-      }));
-
-      setNotifications(formattedNotifications);
-    };
 
     fetchInitialData();
 
@@ -58,6 +68,7 @@ export default function NotificationsDropdown({
         {
           schema: "public",
           event: "INSERT",
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           console.log("投稿の変更が検出されました:", payload);
@@ -65,7 +76,7 @@ export default function NotificationsDropdown({
           // 新しい通知を追加
           const newNotification = {
             id: Date.now(),
-            type: "post",
+            type: "post", 
             icon: <MessageCircle size={16} className="text-blue-500" />,
             message: `「${payload.new.post_content}」が投稿されました`,
             time: new Date().toLocaleString(),
@@ -73,6 +84,8 @@ export default function NotificationsDropdown({
           };
 
           setNotifications((prev) => [newNotification, ...prev]);
+          console.log("notifications after new notification", notifications);
+          fetchInitialData();
         }
       )
       .subscribe();
@@ -83,6 +96,12 @@ export default function NotificationsDropdown({
     };
   }, []);
 
+  console.log("notifications", notifications);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleMarkAllAsRead = async () => {
@@ -91,7 +110,8 @@ export default function NotificationsDropdown({
       const { error } = await supabase
         .from('posted_posts')
         .update({ is_read_in_notifications: true })
-        .eq('is_read_in_notifications', false);
+        .eq('is_read_in_notifications', false)
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -154,16 +174,14 @@ export default function NotificationsDropdown({
             </div>
           ))}
         </div>
-        <div className="p-4 border-t border-gray-100">
+        {/* <div className="p-4 border-t border-gray-100">
           <button
             className="w-full text-center text-sm text-blue-600 hover:text-blue-700"
-            onClick={() => {
-              /* View all notifications */
-            }}
+            onClick={() => {}}
           >
             View all notifications
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );
