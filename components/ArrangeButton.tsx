@@ -34,7 +34,7 @@ export function ArrangeButton({
       onArrange(data.content);
     } catch (error) {
       console.error("アレンジエラー:", error);
-      alert("投稿内容のアレンジに失敗しました");
+      alert("Failed to arrange post content");
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ export function ArrangeButton({
       disabled={isLoading}
       className={cn("w-full", className)}
     >
-      {isLoading ? "アレンジ中..." : "AIでアレンジ"}
+      {isLoading ? "Arranging..." : "Arrange with AI"}
     </Button>
   );
 } 
