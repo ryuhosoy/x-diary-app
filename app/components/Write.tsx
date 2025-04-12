@@ -4,6 +4,8 @@ import { Bell, Calendar, Clock } from 'lucide-react';
 import NotificationsDropdown from '../components/NotificationsDropdown';
 import { useUser } from '../context/UserContext';
 import { supabase } from '@/app/utils/supabase';
+import { Button } from '@/components/ui/button';
+import { ArrangeButton } from '@/components/ArrangeButton';
 
 export default function WritePage() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -149,7 +151,7 @@ export default function WritePage() {
   };
 
   const formatScheduledTime = () => {
-    const monthName = months[scheduledDateTime.month];
+    const monthName = months[scheduledDateTime.month - 1];
     return `Scheduled for ${monthName} ${scheduledDateTime.day}, ${scheduledDateTime.year} at ${scheduledDateTime.hour}:${scheduledDateTime.minute} ${scheduledDateTime.period}`;
   };
 
@@ -173,6 +175,10 @@ export default function WritePage() {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
     }
+  };
+
+  const handleArrangeContent = async (arrangedContent: string) => {
+    setText(arrangedContent);
   };
 
   return (
@@ -203,13 +209,19 @@ export default function WritePage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="What's happening?"
-            className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
-          />
+          <div className="flex flex-col gap-4">
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter your post content..."
+              className="w-full h-32 p-2 border rounded-lg resize-none"
+            />
+            <ArrangeButton
+              content={text}
+              onArrange={handleArrangeContent}
+              className="mb-4"
+            />
+          </div>
 
           {/* 画像プレビュー */}
           {imagePreview && (
@@ -251,7 +263,11 @@ export default function WritePage() {
           </div>
 
           <div className="mt-4">
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg mt-4">
+            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2 text-gray-600">
+                <Calendar className="w-5 h-5" />
+                <span className="font-medium">Schedule Post</span>
+              </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-600">Year</label>
@@ -280,7 +296,7 @@ export default function WritePage() {
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {months.map((month, index) => (
-                      <option key={month} value={index}>{month}</option>
+                      <option key={month} value={index + 1}>{month}</option>
                     ))}
                   </select>
                 </div>
@@ -349,18 +365,21 @@ export default function WritePage() {
                 </div>
               </div>
 
-              <div className="text-sm text-gray-600 font-medium mt-4">
-                {formatScheduledTime()}
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <Clock className="w-4 h-4" />
+                <span>{formatScheduledTime()}</span>
               </div>
             </div>
 
-            <button
-              onClick={handleSchedulePost}
-              disabled={!text}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mt-4"
-            >
-              Schedule Post
-            </button>
+            <div className="mt-6 flex justify-end">
+              <Button
+                onClick={handleSchedulePost}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4" />
+                Schedule Post
+              </Button>
+            </div>
           </div>
         </div>
 
