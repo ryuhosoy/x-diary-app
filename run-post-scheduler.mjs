@@ -31,8 +31,8 @@ async function postScheduledTweets() {
     return;
   }
 
-  // 2. 各投稿をTwitterに投稿
-  for (const post of scheduledPosts) {
+  // 2. 各投稿を並列でTwitterに投稿
+  await Promise.all(scheduledPosts.map(async (post) => {
     try {
       // ユーザー情報を取得
       const { data: userData, error: userError } = await supabase
@@ -46,7 +46,7 @@ async function postScheduledTweets() {
           `❌ ユーザー情報取得エラー (ID: ${post.user_id}):`,
           userError
         );
-        continue;
+        return;
       }
 
       // ユーザーごとのTwitterクライアントを作成
@@ -82,7 +82,7 @@ async function postScheduledTweets() {
     } catch (err) {
       console.error(`🚨 ID ${post.id}のツイート投稿エラー:`, err);
     }
-  }
+  }));
 }
 
 postScheduledTweets();
