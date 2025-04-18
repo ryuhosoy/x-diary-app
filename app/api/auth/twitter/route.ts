@@ -24,14 +24,14 @@ export async function GET() {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', 
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 // 24時間
+      // maxAge: 60 * 60 * 24 // 24時間
     });
 
     cookieStore.set('oauth_token_secret', authLink.oauth_token_secret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax', 
-      maxAge: 60 * 60 * 24 // 24時間
+      // maxAge: 60 * 60 * 24 // 24時間
     });
 
     return response;

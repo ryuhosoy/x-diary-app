@@ -31,16 +31,17 @@ export async function GET() {
     const currentUser = await userClient.currentUserV2();
 
     if (currentUser.data) {
-      const { data, error } = await supabase
-        .from("users")
-        .upsert([
+      const { data, error } = await supabase.from("users").upsert(
+        [
           {
             user_id: currentUser.data.id,
             username: currentUser.data.username,
             access_token: accessToken,
             access_secret: accessSecret,
           },
-        ], { onConflict: 'user_id' });
+        ],
+        { onConflict: "user_id" }
+      );
 
       if (error) {
         console.error("ユーザー情報の更新エラー:", error);
@@ -51,9 +52,24 @@ export async function GET() {
 
     console.log("currentUser", currentUser);
 
+    console.log("currentUser.data.id", currentUser.data.id);
+
+    // const tweets = await userClient.v2.userTimeline(currentUser.data.id, {
+    //   exclude: "replies",
+    //   // "tweet.fields": "public_metrics",
+    //   // max_results: 2,
+    // });
+
+    // console.log("userTimeline tweets data", tweets.data);
+    // if (tweets.errors) {
+    //   console.error("Error:", tweets.errors);
+    // } else {
+    //   console.log("tweets/search/recent", tweets);
+    // }
+
     return NextResponse.json(currentUser.data);
   } catch (error) {
-    console.error("ユーザー情報取得エラー:", error);
+    console.error("ユーザー情報取得エラー in /api/user:", error);
     return NextResponse.json(
       { error: "Failed to fetch user data" },
       { status: 500 }

@@ -32,14 +32,14 @@ export async function GET(req: NextRequest) {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', 
         sameSite: 'lax',
-        maxAge: 60 * 60 * 24 // 24時間
+        // maxAge: 60 * 60 * 24 // 24時間
       });
   
       cookieStore.set('accessSecret', accessSecret, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax', 
-        maxAge: 60 * 60 * 24 // 24時間
+        // maxAge: 60 * 60 * 24 // 24時間
       });
 
       console.log('accessToken in callback', accessToken);
