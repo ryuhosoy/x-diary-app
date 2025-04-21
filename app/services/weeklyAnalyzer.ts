@@ -1,5 +1,5 @@
 import { Post, Account, WeeklyAnalysis, AnalysisResult } from '../types/schema';
-import { PostManager } from './postManager';
+import { PostManager } from '../../postManager';
 import { Analyzer } from './analyzer';
 import { KPIManager } from './kpiManager';
 

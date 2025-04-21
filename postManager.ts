@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { Post, Account, Persona } from '../types/schema';
+import { Post, Account, Persona } from './app/types/schema';
 import { OpenAI } from 'openai';
 
 export class PostManager {
