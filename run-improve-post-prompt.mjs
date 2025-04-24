@@ -15,96 +15,104 @@ const openai = new OpenAI({
 async function improvePostPrompt() {
   console.log(`🕒 投稿プロンプトの改善分析を開始します...`);
 
-  // 1. KPIデータを取得
-  const { data: userData, error: kpiError } = await supabase
+  // 1. KPIデータのあるユーザーを全て取得
+  const { data: users, error: usersError } = await supabase
     .from("users")
-    .select("kpi_data")
-    .single();
+    .select("*")
+    .not("kpi_data", "is", null);
 
-  if (kpiError) {
-    console.error("❌ KPIデータ取得エラー:", kpiError.message);
+  if (usersError) {
+    console.error("❌ ユーザーデータ取得エラー:", usersError.message);
     process.exit(1);
   }
 
-  if (!userData || !userData.kpi_data) {
-    console.log("✅ KPIデータが存在しません。");
+  if (!users || users.length === 0) {
+    console.log("✅ KPIデータのあるユーザーが存在しません。");
     return;
   }
 
-  const kpiData = userData.kpi_data;
-  console.log(`📊 KPIデータを取得しました`);
+  // 各ユーザーに対して処理を実行
+  for (const user of users) {
+    console.log(`👤 ユーザーID: ${user.id}の処理を開始`);
 
-  // 2. 現在の投稿プロンプトを取得
-  const { data: promptData, error: promptError } = await supabase
-    .from("users")
-    .select("next_post_prompt")
-    .single();
+    const kpiData = user.kpi_data;
+    console.log(`📊 KPIデータを取得しました`);
 
-  if (promptError) {
-    console.error("❌ プロンプト取得エラー:", promptError.message);
-    process.exit(1);
-  }
+    // 2. 現在の投稿プロンプトを取得
+    const { data: promptData, error: promptError } = await supabase
+      .from("users")
+      .select("next_post_prompt")
+      .eq("id", user.id)
+      .single();
 
-  if (!promptData || promptData.length === 0) {
-    console.log("❌ 現在のプロンプトが見つかりません。");
-    return;
-  }
-
-  const currentPrompt = promptData;
-  console.log(`📝 現在のプロンプト: ${currentPrompt}`);
-
-  // 3. KPIデータを解析用に整形
-  const metrics = {
-    total_posts: 1,
-    avg_favorites: kpiData.favorite_count,
-    best_performing_post: {
-      favorite_count: kpiData.favorite_count,
-      text: kpiData.text
+    if (promptError) {
+      console.error(`❌ プロンプト取得エラー (ユーザーID: ${user.id}):`, promptError.message);
+      continue;
     }
-  };
-  console.log(`📈 メトリクス:`, metrics);
 
-  // 4. AIにプロンプトの改善を判断させる
-  const improvementResult = await analyzePromptImprovement(currentPrompt, metrics);
+    if (!promptData || !promptData.next_post_prompt) {
+      console.log(`❌ ユーザーID: ${user.id}の現在のプロンプトが見つかりません。`);
+      continue;
+    }
 
-  console.log(`🔄 プロンプトの改善結果:`, improvementResult);
-  
-  let promptToSave = currentPrompt;
-  let improvementReason = '';
+    const currentPrompt = promptData.next_post_prompt;
+    console.log(`📝 現在のプロンプト: ${currentPrompt}`);
 
-  if (!improvementResult.needsImprovement) {
-    console.log(`✅ 現在のプロンプトは良好です。改善は不要です。`);
-  } else {
-    console.log(`🔄 プロンプトの改善が必要です。`);
-    console.log(`💡 改善提案: ${improvementResult.suggestions.join(', ')}`);
-    console.log(`✨ 新しいプロンプト: ${improvementResult.newPrompt}`);
-    promptToSave = improvementResult.newPrompt;
-    improvementReason = improvementResult.suggestions.join(', ');
-  }
+    // 3. KPIデータを解析用に整形
+    const metrics = {
+      total_posts: 1,
+      avg_favorites: kpiData.favorite_count,
+      best_performing_post: {
+        favorite_count: kpiData.favorite_count,
+        text: kpiData.text
+      }
+    };
+    console.log(`📈 メトリクス:`, metrics);
 
-  // 5. プロンプトをデータベースに保存
-  const { error: updateError } = await supabase
-    .from("users")
-    .update({ next_post_prompt: promptToSave })
-    .single();
+    // 4. AIにプロンプトの改善を判断させる
+    const improvementResult = await analyzePromptImprovement(currentPrompt, metrics);
 
-  if (updateError) {
-    console.error(`❌ プロンプトの保存に失敗しました:`, updateError);
-  } else {
-    console.log(`📝 プロンプトを保存しました`);
-  }
+    console.log(`🔄 プロンプトの改善結果:`, improvementResult);
+    
+    let promptToSave = currentPrompt;
+    let improvementReason = '';
 
-  // 6. プロンプト履歴を保存
-  const { error: insertError } = await supabase.from("user_prompts").insert({
-    user_id: currentPrompt.user_id,
-    prompt_content: promptToSave,
-    previous_prompt_id: currentPrompt.id,
-    improvement_reason: improvementReason,
-    created_at: new Date().toISOString(),
-  });
+    if (!improvementResult.needsImprovement) {
+      console.log(`✅ 現在のプロンプトは良好です。改善は不要です。`);
+    } else {
+      console.log(`🔄 プロンプトの改善が必要です。`);
+      console.log(`💡 改善提案: ${improvementResult.suggestions.join(', ')}`);
+      console.log(`✨ 新しいプロンプト: ${improvementResult.newPrompt}`);
+      promptToSave = improvementResult.newPrompt;
+      improvementReason = improvementResult.suggestions.join(', ');
+    }
 
-  if (insertError) {
-    console.error(`❌ プロンプト履歴の保存に失敗しました:`, insertError);
+    // 5. プロンプトをデータベースに保存
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ next_post_prompt: promptToSave })
+      .eq("id", user.id);
+
+    if (updateError) {
+      console.error(`❌ プロンプトの保存に失敗しました (ユーザーID: ${user.id}):`, updateError);
+    } else {
+      console.log(`📝 プロンプトを保存しました`);
+    }
+
+    // 6. プロンプト履歴を保存
+    const { error: insertError } = await supabase.from("user_prompts").insert({
+      user_id: user.id,
+      prompt_content: promptToSave,
+      previous_prompt_id: promptData.id,
+      improvement_reason: improvementReason,
+      created_at: new Date().toISOString(),
+    });
+
+    if (insertError) {
+      console.error(`❌ プロンプト履歴の保存に失敗しました (ユーザーID: ${user.id}):`, insertError);
+    }
+
+    console.log(`✅ ユーザーID: ${user.id}の処理が完了しました`);
   }
 }
 
