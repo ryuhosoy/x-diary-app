@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import { TwitterApi } from "twitter-api-v2";
 import OpenAI from "openai";
 
 // Supabaseクライアント作成
@@ -50,73 +49,21 @@ async function analyzePostPotential() {
 
   console.log(`✨ 最良の投稿を選択しました: ${bestPost.post_content}`);
 
-  // 3. ユーザー情報を取得
-  const { data: userData, error: userError } = await supabase
+  // ユーザーのbest_post_id_for_improveを更新
+  const { error: updateError } = await supabase
     .from("users")
-    .select("*")
-    .eq("user_id", bestPost.user_id)
-    .single();
+    .upsert({ best_post_id_for_improve: bestPost.posted_post_id })
+    .eq("user_id", bestPost.user_id);
 
-  if (userError || !userData) {
+  if (updateError) {
     console.error(
-      `❌ ユーザー情報取得エラー (ID: ${bestPost.user_id}):`,
-      userError
+      `❌ ユーザーのbest_post_id更新エラー (ID: ${bestPost.user_id}):`,
+      updateError
     );
     return;
   }
 
-  // 4. Twitterクライアントを作成
-  const twitterClient = new TwitterApi({
-    appKey: process.env.TWITTER_API_KEY,
-    appSecret: process.env.TWITTER_API_SECRET_KEY,
-    accessToken: userData.access_token,
-    accessSecret: userData.access_secret,
-  });
-
-  // 5. ツイートのメトリクスを取得
-  try {
-    const tweet = await twitterClient.v2.tweet(bestPost.posted_post_id, {
-      expansions: ['public_metrics'],
-      'tweet.fields': ['public_metrics']
-    });
-
-    const metrics = tweet.data.public_metrics;
-    
-    // エンゲージメント率の計算
-    const totalInteractions = 
-      metrics.like_count + 
-      metrics.retweet_count + 
-      metrics.reply_count;
-    
-    const engagement = metrics.impression_count > 0 
-      ? (totalInteractions / metrics.impression_count) * 100 
-      : 0;
-
-    // 6. メトリクスをデータベースに保存
-    const { error: insertError } = await supabase.from("post_metrics").insert({
-      user_id: bestPost.user_id,
-      post_id: bestPost.posted_post_id,
-      likes: metrics.like_count,
-      retweets: metrics.retweet_count,
-      replies: metrics.reply_count,
-      impressions: metrics.impression_count,
-      engagement: engagement,
-      analyzed_at: new Date().toISOString(),
-    });
-
-    if (insertError) {
-      console.error(`❌ メトリクスの保存に失敗しました:`, insertError);
-    } else {
-      console.log(`📝 メトリクスを保存しました`);
-      console.log(`❤️ いいね数: ${metrics.like_count}`);
-      console.log(`🔄 リツイート数: ${metrics.retweet_count}`);
-      console.log(`💬 リプライ数: ${metrics.reply_count}`);
-      console.log(`👁️ インプレッション数: ${metrics.impression_count}`);
-      console.log(`📈 エンゲージメント率: ${engagement.toFixed(2)}%`);
-    }
-  } catch (err) {
-    console.error(`🚨 ツイートメトリクスの取得エラー:`, err);
-  }
+  console.log(`✅ ユーザーID: ${bestPost.user_id}のbest_post_idを${bestPost.posted_post_id}に更新しました`);
 }
 
 async function selectBestPost(posts) {
@@ -144,7 +91,7 @@ ${posts.map((post, index) => `${index + 1}. ID: ${post.posted_post_id}, 内容: 
     console.log(`🤖 AIが選択した投稿ID: ${selectedId}`);
 
     // 選択されたIDの投稿を返す
-    return posts.find(post => post.posted_post_id === selectedId) || posts[0];
+    return posts.find(post => post.posted_post_id === parseInt(selectedId)) || posts[0];
   } catch (error) {
     console.error("❌ AIによる投稿選択エラー:", error);
     // エラーの場合は最初の投稿を返す
