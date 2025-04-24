@@ -49,10 +49,13 @@ async function analyzePostPotential() {
 
   console.log(`✨ 最良の投稿を選択しました: ${bestPost.post_content}`);
 
+  console.log("bestPost.posted_post_id", bestPost.posted_post_id);
+  console.log("bestPost.user_id", bestPost.user_id);
+
   // ユーザーのbest_post_id_for_improveを更新
   const { error: updateError } = await supabase
     .from("users")
-    .upsert({ best_post_id_for_improve: bestPost.posted_post_id })
+    .update({ best_post_id_for_improve: bestPost.posted_post_id })
     .eq("user_id", bestPost.user_id);
 
   if (updateError) {
