@@ -20,31 +20,30 @@ const oneWeekAgoISO = oneWeekAgo.toISOString();
 async function improvePostPrompt() {
   console.log(`🕒 投稿プロンプトの改善分析を開始します...`);
 
-  // 1. 過去1週間の投稿メトリクスを取得
-  const { data: postMetrics, error: metricsError } = await supabase
-    .from("post_metrics")
-    .select("*")
-    .gte("analyzed_at", oneWeekAgoISO)
-    .order("analyzed_at", { ascending: false });
+  // 1. 過去1週間のKPIデータを取得
+  const { data: userData, error: kpiError } = await supabase
+    .from("users")
+    .select("kpi_data")
+    .single();
 
-  if (metricsError) {
-    console.error("❌ メトリクス取得エラー:", metricsError.message);
+  if (kpiError) {
+    console.error("❌ KPIデータ取得エラー:", kpiError.message);
     process.exit(1);
   }
 
-  if (!postMetrics || postMetrics.length === 0) {
-    console.log("✅ 過去1週間のメトリクスデータはありません。");
+  if (!userData || !userData.kpi_data) {
+    console.log("✅ KPIデータが存在しません。");
     return;
   }
 
-  console.log(`📊 過去1週間のメトリクス数: ${postMetrics.length}`);
+  const kpiData = userData.kpi_data;
+  console.log(`📊 KPIデータを取得しました`);
 
   // 2. 現在の投稿プロンプトを取得
   const { data: promptData, error: promptError } = await supabase
-    .from("user_prompts")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(1);
+    .from("users")
+    .select("next_post_prompt")
+    .single();
 
   if (promptError) {
     console.error("❌ プロンプト取得エラー:", promptError.message);
@@ -56,11 +55,11 @@ async function improvePostPrompt() {
     return;
   }
 
-  const currentPrompt = promptData[0];
-  console.log(`📝 現在のプロンプト: ${currentPrompt.prompt_content}`);
+  const currentPrompt = promptData;
+  console.log(`📝 現在のプロンプト: ${currentPrompt}`);
 
-  // 3. メトリクスデータを集計
-  const aggregatedMetrics = aggregateMetrics(postMetrics);
+  // 3. KPIデータを集計
+  const aggregatedMetrics = aggregateKPIData(kpiData);
   console.log(`📈 集計されたメトリクス:`, aggregatedMetrics);
 
   // 4. AIにプロンプトの改善を判断させる
@@ -91,26 +90,24 @@ async function improvePostPrompt() {
   }
 }
 
-function aggregateMetrics(metrics) {
-  // メトリクスを集計
-  const total = metrics.length;
-  const sumLikes = metrics.reduce((sum, m) => sum + m.likes, 0);
-  const sumRetweets = metrics.reduce((sum, m) => sum + m.retweets, 0);
-  const sumReplies = metrics.reduce((sum, m) => sum + m.replies, 0);
-  const sumImpressions = metrics.reduce((sum, m) => sum + m.impressions, 0);
-  const sumEngagement = metrics.reduce((sum, m) => sum + m.engagement, 0);
+function aggregateKPIData(kpiData) {
+  // KPIデータを集計
+  const posts = Array.isArray(kpiData) ? kpiData : [kpiData];
+  const total = posts.length;
+  
+  const sumFavorites = posts.reduce((sum, post) => {
+    const data = typeof post === 'string' ? JSON.parse(post) : post;
+    return sum + (data.favorite_count || 0);
+  }, 0);
 
   return {
     total_posts: total,
-    avg_likes: total > 0 ? sumLikes / total : 0,
-    avg_retweets: total > 0 ? sumRetweets / total : 0,
-    avg_replies: total > 0 ? sumReplies / total : 0,
-    avg_impressions: total > 0 ? sumImpressions / total : 0,
-    avg_engagement: total > 0 ? sumEngagement / total : 0,
-    best_performing_post: metrics.reduce((best, current) => 
-      current.engagement > best.engagement ? current : best, 
-      metrics[0]
-    )
+    avg_favorites: total > 0 ? sumFavorites / total : 0,
+    best_performing_post: posts.reduce((best, current) => {
+      const currentData = typeof current === 'string' ? JSON.parse(current) : current;
+      const bestData = typeof best === 'string' ? JSON.parse(best) : best;
+      return currentData.favorite_count > bestData.favorite_count ? currentData : bestData;
+    }, posts[0])
   };
 }
 
@@ -123,13 +120,10 @@ ${currentPrompt}
 
 メトリクス:
 - 投稿数: ${metrics.total_posts}
-- 平均いいね数: ${metrics.avg_likes.toFixed(2)}
-- 平均リツイート数: ${metrics.avg_retweets.toFixed(2)}
-- 平均リプライ数: ${metrics.avg_replies.toFixed(2)}
-- 平均インプレッション数: ${metrics.avg_impressions.toFixed(2)}
-- 平均エンゲージメント率: ${metrics.avg_engagement.toFixed(2)}%
+- 平均いいね数: ${metrics.avg_favorites.toFixed(2)}
 
-最良の投稿のエンゲージメント率: ${metrics.best_performing_post.engagement.toFixed(2)}%
+最良の投稿のいいね数: ${metrics.best_performing_post.favorite_count}
+最良の投稿内容: ${metrics.best_performing_post.text}
 
 以下の点を判断してください:
 1. このプロンプトは改善が必要かどうか
