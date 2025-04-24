@@ -41,7 +41,7 @@ async function analyzePostPotential() {
 
   // 2. AIに最良の投稿を選ばせる
   const bestPost = await selectBestPost(postedPosts);
-  
+
   if (!bestPost) {
     console.log("❌ 最良の投稿を選択できませんでした。");
     return;
@@ -80,6 +80,8 @@ ${posts.map((post, index) => `${index + 1}. ID: ${post.posted_post_id}, 内容: 
 
 選んだ投稿のIDのみを返してください。説明は不要です。
 `;
+
+  console.log("prompt", prompt);
 
   try {
     const completion = await openai.chat.completions.create({
