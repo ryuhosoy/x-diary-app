@@ -93,7 +93,7 @@ ${posts.map((post, index) => `${index + 1}. ID: ${post.posted_post_id}, 内容: 
     console.log(`🤖 AIが選択した投稿ID: ${selectedId}`);
 
     // 選択されたIDの投稿を返す
-    return posts.find(post => post.posted_post_id === parseInt(selectedId)) || posts[0];
+    return posts.find(post => post.posted_post_id === selectedId) || posts[0];
   } catch (error) {
     console.error("❌ AIによる投稿選択エラー:", error);
     // エラーの場合は最初の投稿を返す
