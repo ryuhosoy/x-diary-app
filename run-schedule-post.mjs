@@ -22,7 +22,7 @@ async function generatePostContent(prompt) {
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that generates engaging social media posts."
+          content: "あなたは魅力的なソーシャルメディアの投稿を生成する優秀なアシスタントです。"
         },
         {
           role: "user",
@@ -32,7 +32,7 @@ async function generatePostContent(prompt) {
     })
     return completion.choices[0].message.content
   } catch (error) {
-    console.error('Error generating post content:', error)
+    console.error('投稿内容の生成中にエラーが発生しました:', error)
     return null
   }
 }
@@ -42,7 +42,7 @@ async function schedulePostsForUsers() {
     // Get all users with their next_post_prompt
     const { data: users, error: usersError } = await supabase
       .from('users')
-      .select('id, next_post_prompt')
+      .select('user_id, next_post_prompt')
       .not('next_post_prompt', 'is', null)
 
     if (usersError) {
@@ -54,7 +54,7 @@ async function schedulePostsForUsers() {
       const postContent = await generatePostContent(user.next_post_prompt)
       
       if (!postContent) {
-        console.error(`Failed to generate post content for user ${user.id}`)
+        console.error(`ユーザー ${user.user_id} の投稿内容の生成に失敗しました`)
         continue
       }
 
@@ -67,7 +67,7 @@ async function schedulePostsForUsers() {
         .from('scheduled_posts')
         .insert([
           {
-            user_id: user.id,
+            user_id: user.user_id,
             post_content: postContent,
             scheduled_time: scheduledTime.toISOString(),
             image_url: null // Optional: Add image generation if needed
@@ -75,24 +75,24 @@ async function schedulePostsForUsers() {
         ])
 
       if (insertError) {
-        console.error(`Error scheduling post for user ${user.id}:`, insertError)
+        console.error(`ユーザー ${user.user_id} の投稿スケジュール設定中にエラーが発生しました:`, insertError)
         continue
       }
 
-      console.log(`Successfully scheduled post for user ${user.id}`)
+      console.log(`ユーザー ${user.user_id} の投稿を正常にスケジュール設定しました`)
     }
   } catch (error) {
-    console.error('Error in schedulePostsForUsers:', error)
+    console.error('schedulePostsForUsers関数でエラーが発生しました:', error)
   }
 }
 
 // Run the scheduler
 schedulePostsForUsers()
   .then(() => {
-    console.log('Completed scheduling posts for users')
+    console.log('全ユーザーの投稿スケジュール設定が完了しました')
     process.exit(0)
   })
   .catch((error) => {
-    console.error('Fatal error:', error)
+    console.error('致命的なエラーが発生しました:', error)
     process.exit(1)
   })
