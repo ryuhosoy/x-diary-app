@@ -36,7 +36,7 @@ async function improvePostPrompt() {
     console.log(`👤 ユーザーID: ${user.user_id}の処理を開始`);
 
     const kpiData = user.kpi_data;
-    console.log(`📊 KPIデータを取得しました`);
+    console.log(`📊 KPIデータを取得しました`, kpiData);
 
     // 2. 現在の投稿プロンプトを取得
     const { data: promptData, error: promptError } = await supabase
@@ -55,7 +55,7 @@ async function improvePostPrompt() {
       continue;
     }
 
-    const currentPrompt = promptData;
+    const currentPrompt = promptData.next_post_prompt;
     console.log(`📝 現在のプロンプト: ${currentPrompt}`);
 
     // 3. KPIデータを解析用に整形
