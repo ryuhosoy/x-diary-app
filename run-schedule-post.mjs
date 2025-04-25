@@ -52,6 +52,8 @@ async function schedulePostsForUsers() {
     for (const user of users) {
       // Generate post content using the user's prompt
       const postContent = await generatePostContent(user.next_post_prompt)
+
+      console.log(`ユーザー ${user.user_id} の投稿内容: ${postContent}`)
       
       if (!postContent) {
         console.error(`ユーザー ${user.user_id} の投稿内容の生成に失敗しました`)
@@ -79,7 +81,7 @@ async function schedulePostsForUsers() {
         continue
       }
 
-      console.log(`ユーザー ${user.user_id} の投稿を正常にスケジュール設定しました`)
+      console.log(`ユーザー ${user.user_id} の投稿を ${scheduledTime.toLocaleString('ja-JP')} に投稿するようスケジュール設定しました`)
     }
   } catch (error) {
     console.error('schedulePostsForUsers関数でエラーが発生しました:', error)

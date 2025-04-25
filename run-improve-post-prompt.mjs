@@ -33,7 +33,7 @@ async function improvePostPrompt() {
 
   // 各ユーザーに対して処理を実行
   for (const user of users) {
-    console.log(`👤 ユーザーID: ${user.id}の処理を開始`);
+    console.log(`👤 ユーザーID: ${user.user_id}の処理を開始`);
 
     const kpiData = user.kpi_data;
     console.log(`📊 KPIデータを取得しました`);
@@ -42,20 +42,20 @@ async function improvePostPrompt() {
     const { data: promptData, error: promptError } = await supabase
       .from("users")
       .select("next_post_prompt")
-      .eq("id", user.id)
+      .eq("user_id", user.user_id)
       .single();
 
     if (promptError) {
-      console.error(`❌ プロンプト取得エラー (ユーザーID: ${user.id}):`, promptError.message);
+      console.error(`❌ プロンプト取得エラー (ユーザーID: ${user.user_id}):`, promptError.message);
       continue;
     }
 
-    if (!promptData || !promptData.next_post_prompt) {
-      console.log(`❌ ユーザーID: ${user.id}の現在のプロンプトが見つかりません。`);
+    if (!promptData) {
+      console.log(`❌ ユーザーID: ${user.user_id}の現在のプロンプトが見つかりません。`);
       continue;
     }
 
-    const currentPrompt = promptData.next_post_prompt;
+    const currentPrompt = promptData;
     console.log(`📝 現在のプロンプト: ${currentPrompt}`);
 
     // 3. KPIデータを解析用に整形
@@ -91,28 +91,28 @@ async function improvePostPrompt() {
     const { error: updateError } = await supabase
       .from("users")
       .update({ next_post_prompt: promptToSave })
-      .eq("id", user.id);
+      .eq("user_id", user.user_id);
 
     if (updateError) {
-      console.error(`❌ プロンプトの保存に失敗しました (ユーザーID: ${user.id}):`, updateError);
+      console.error(`❌ プロンプトの保存に失敗しました (ユーザーID: ${user.user_id}):`, updateError);
     } else {
       console.log(`📝 プロンプトを保存しました`);
     }
 
-    // 6. プロンプト履歴を保存
-    const { error: insertError } = await supabase.from("user_prompts").insert({
-      user_id: user.id,
-      prompt_content: promptToSave,
-      previous_prompt_id: promptData.id,
-      improvement_reason: improvementReason,
-      created_at: new Date().toISOString(),
-    });
+    // // 6. プロンプト履歴を保存
+    // const { error: insertError } = await supabase.from("user_prompts").insert({
+    //   user_id: user.user_id,
+    //   prompt_content: promptToSave,
+    //   previous_prompt_id: promptData.id,
+    //   improvement_reason: improvementReason,
+    //   created_at: new Date().toISOString(),
+    // });
 
-    if (insertError) {
-      console.error(`❌ プロンプト履歴の保存に失敗しました (ユーザーID: ${user.id}):`, insertError);
-    }
+    // if (insertError) {
+    //   console.error(`❌ プロンプト履歴の保存に失敗しました (ユーザーID: ${user.user_id}):`, insertError);
+    // }
 
-    console.log(`✅ ユーザーID: ${user.id}の処理が完了しました`);
+    console.log(`✅ ユーザーID: ${user.user_id}の処理が完了しました`);
   }
 }
 
