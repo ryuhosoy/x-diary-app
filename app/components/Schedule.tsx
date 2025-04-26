@@ -5,8 +5,8 @@ import { Calendar, Edit3 } from 'lucide-react';
 export default function SchedulePage() {
   return (
     <div className="flex-1 p-8">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8">Post Schedule</h2>
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-8 text-center">Post Schedule</h2>
 
         {/* Schedule Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

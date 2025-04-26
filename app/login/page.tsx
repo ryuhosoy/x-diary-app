@@ -22,8 +22,8 @@ function LoginContent() {
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <X size={40} className="text-blue-600" />
+          <div className="mb-4">
+            <X size={40} className="text-blue-600 mx-auto" />
           </div>
           <h2 className="text-2xl font-bold mb-2">Welcome to X Diary</h2>
           <p className="text-gray-600">

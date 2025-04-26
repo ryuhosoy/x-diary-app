@@ -5,8 +5,8 @@ import { BarChart2, TrendingUp, Users, Activity } from 'lucide-react';
 export default function AnalyticsPage() {
   return (
     <div className="flex-1 p-8">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8">Analytics Dashboard</h2>
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-8 text-center">Analytics Dashboard</h2>
         
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

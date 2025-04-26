@@ -54,9 +54,11 @@ export default function Home() {
       <div
         className={`flex-1 ${
           showSidebar ? "ml-64" : "ml-20"
-        } transition-all duration-300 p-6`}
+        } transition-all duration-300`}
       >
-        <main>{renderContent()}</main>
+        <main className="h-full">
+          {renderContent()}
+        </main>
       </div>
     </div>
   );
