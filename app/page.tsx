@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import WritePage from "./components/Write";
-import AnalyticsPage from "./components/Analytics";
+import PersonaPage from "./components/Persona";
+import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
-import PremiumPage from "./components/Premium";
+import AnalyticsPage from "./components/Analytics";
 import SettingsPage from "./components/Settings";
 import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
-  const [currentPage, setCurrentPage] = useState("write");
+  const [currentPage, setCurrentPage] = useState("persona");
 
   // const { userId, username, clearUserInfo } = useUser();
 
@@ -28,18 +28,18 @@ export default function Home() {
 
   const renderContent = () => {
     switch (currentPage) {
-      case "write":
-        return <WritePage />;
-      case "analytics":
-        return <AnalyticsPage />;
+      case "persona":
+        return <PersonaPage />;
+      case "templates":
+        return <TemplatesPage />;
       case "schedule":
         return <SchedulePage />;
-      case "premium":
-        return <PremiumPage />;
+      case "analytics":
+        return <AnalyticsPage />;
       case "settings":
         return <SettingsPage />;
       default:
-        return <WritePage />;
+        return <PersonaPage />;
     }
   };
 
@@ -54,7 +54,7 @@ export default function Home() {
       <div
         className={`flex-1 ${
           showSidebar ? "ml-64" : "ml-20"
-        } transition-all duration-300`}
+        } transition-all duration-300 p-6`}
       >
         <main>{renderContent()}</main>
       </div>
