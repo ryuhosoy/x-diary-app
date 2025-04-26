@@ -35,8 +35,10 @@ async function improvePostPrompt() {
   for (const user of users) {
     console.log(`👤 ユーザーID: ${user.user_id}の処理を開始`);
 
-    const kpiData = user.kpi_data;
+    const kpiData = JSON.parse(user.kpi_data);
     console.log(`📊 KPIデータを取得しました`, kpiData);
+    console.log(`お気に入り数: ${kpiData.favorite_count}`);
+    console.log(`tweet_id: ${kpiData.tweet_id}`);
 
     // 2. 現在の投稿プロンプトを取得
     const { data: promptData, error: promptError } = await supabase
@@ -60,8 +62,6 @@ async function improvePostPrompt() {
 
     // 3. KPIデータを解析用に整形
     const metrics = {
-      total_posts: 1,
-      avg_favorites: kpiData.favorite_count,
       best_performing_post: {
         favorite_count: kpiData.favorite_count,
         text: kpiData.text
@@ -124,7 +124,7 @@ async function analyzePromptImprovement(currentPrompt, metrics) {
 ${currentPrompt}
 
 メトリクス:
-- いいね数: ${metrics.avg_favorites}
+- いいね数: ${metrics.best_performing_post.favorite_count}
 
 投稿内容: ${metrics.best_performing_post.text}
 
