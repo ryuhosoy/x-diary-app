@@ -18,7 +18,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const router = useRouter();
   const links = [
-    { id: 'persona', label: 'Persona Settings', icon: Edit3 },
+    { id: 'persona', label: 'Account Settings', icon: Edit3 },
     { id: 'templates', label: 'Post Templates', icon: FileText },
     { id: 'schedule', label: 'Post Schedule', icon: Clock },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PersonaPage from "./components/Persona";
+import AccountSettingsPage from "./components/AccountSettings";
 import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
 import AnalyticsPage from "./components/Analytics";
@@ -29,7 +29,7 @@ export default function Home() {
   const renderContent = () => {
     switch (currentPage) {
       case "persona":
-        return <PersonaPage />;
+        return <AccountSettingsPage />;
       case "templates":
         return <TemplatesPage />;
       case "schedule":
@@ -39,7 +39,7 @@ export default function Home() {
       case "settings":
         return <SettingsPage />;
       default:
-        return <PersonaPage />;
+        return <AccountSettingsPage />;
     }
   };
 
