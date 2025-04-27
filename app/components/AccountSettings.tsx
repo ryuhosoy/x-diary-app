@@ -24,22 +24,22 @@ export default function AccountSettingsPage() {
     const newErrors: Record<string, string> = {};
     
     if (!accountSettings.name.trim()) {
-      newErrors.name = 'Account Characterは必須です';
+      newErrors.name = 'Account Character is required';
     }
     if (!accountSettings.targetAudience.trim()) {
-      newErrors.targetAudience = 'Target Audienceは必須です';
+      newErrors.targetAudience = 'Target Audience is required';
     }
     if (!accountSettings.expertise.trim()) {
-      newErrors.expertise = 'Expertiseは必須です';
+      newErrors.expertise = 'Expertise is required';
     }
     if (!accountSettings.tone.trim()) {
-      newErrors.tone = 'Posting Styleは必須です';
+      newErrors.tone = 'Posting Style is required';
     }
     if (!accountSettings.description.trim()) {
-      newErrors.description = 'Account Descriptionは必須です';
+      newErrors.description = 'Account Description is required';
     }
     if (!accountSettings.topics.trim()) {
-      newErrors.topics = 'Post Topicsは必須です';
+      newErrors.topics = 'Post Topics is required';
     }
 
     setErrors(newErrors);
@@ -50,12 +50,12 @@ export default function AccountSettingsPage() {
     e.preventDefault();
     
     if (!validateForm()) {
-      toast.error('必須項目を入力してください');
+      toast.error('Please fill in all required fields');
       return;
     }
 
     try {
-      const response = await fetch('/api/supabase/account-settings', {
+      const response = await fetch('/api/supabase/accountSettings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,12 +64,12 @@ export default function AccountSettingsPage() {
       });
 
       if (!response.ok) {
-        throw new Error('設定の保存に失敗しました');
+        throw new Error('Failed to save settings');
       }
 
-      toast.success('設定を保存しました');
+      toast.success('Settings saved successfully');
     } catch (error) {
-      toast.error('エラーが発生しました');
+      toast.error('An error occurred');
       console.error('Error saving settings:', error);
     }
   };

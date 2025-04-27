@@ -1,4 +1,5 @@
 import { supabase } from "@/app/utils/supabase";
+import { cookies } from "next/headers";
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
@@ -17,13 +18,16 @@ export async function POST(request: Request) {
       }
     }
 
+    const cookieStore = await cookies();
+    const user_id = cookieStore.get('user_id')?.value;
+
     // ユーザーのアカウント設定を更新
     const { error: updateError } = await supabase
       .from('users')
       .update({
         account_settings: accountSettings,
       })
-      .eq('user_id', user.id);
+      .eq('user_id', user_id);
 
     if (updateError) {
       console.error('Error updating account settings:', updateError);

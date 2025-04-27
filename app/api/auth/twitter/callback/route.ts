@@ -32,6 +32,14 @@ export async function GET(req: NextRequest) {
       console.log("screenName in callback", screenName);
       console.log("userId in callback", userId);
 
+      const cookieStore = await cookies();
+      
+      cookieStore.set('user_id', userId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+      });
+
       const { data, error } = await supabase.from("users").upsert(
         [
           {
@@ -47,8 +55,6 @@ export async function GET(req: NextRequest) {
       if (error) {
         console.error("ユーザー情報の更新エラー:", error);
       }
-
-      const cookieStore = await cookies();
 
       cookieStore.set('accessToken', accessToken, {
         httpOnly: true,
