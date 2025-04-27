@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { TOKENS } from "@/app/lib/twitter";
 import { cookies } from "next/headers";
 import { TwitterApi } from "twitter-api-v2";
+import { supabase } from "@/app/utils/supabase";
 
 export async function GET(req: NextRequest) {
 
@@ -25,6 +26,27 @@ export async function GET(req: NextRequest) {
       });
 
       const { accessToken, accessSecret, screenName, userId } = await tempClient.login(verifier);
+
+      console.log("accessToken in callback", accessToken);
+      console.log("accessSecret in callback", accessSecret); 
+      console.log("screenName in callback", screenName);
+      console.log("userId in callback", userId);
+
+      const { data, error } = await supabase.from("users").upsert(
+        [
+          {
+            user_id: userId,
+            username: screenName,
+            access_token: accessToken,
+            access_secret: accessSecret,
+          },
+        ],
+        { onConflict: "user_id" }
+      );
+
+      if (error) {
+        console.error("ユーザー情報の更新エラー:", error);
+      }
 
       const cookieStore = await cookies();
 
