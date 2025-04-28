@@ -39,7 +39,7 @@ async function generatePostContent(prompt) {
 
 async function generatePromptFromSettings(settings) {
   const { name, description, targetAudience, expertise, tone, topics } = settings
-  return `以下の設定に基づいて、魅力的なソーシャルメディアの投稿を作成してください：
+  const prompt = `以下の設定に基づいて、魅力的なソーシャルメディアの投稿を作成してください：
 
 アカウントキャラクター: ${name}
 アカウント説明: ${description}
@@ -48,7 +48,10 @@ async function generatePromptFromSettings(settings) {
 投稿スタイル: ${tone}
 投稿トピック: ${topics}
 
-これらの設定を考慮して、自然で魅力的な投稿を全角140文字・半角280文字以内で1つ作成してください。`
+これらの設定を考慮して、aiっぽくなく、人間的な話し方で、日本語の自然な投稿を全角140文字・半角280文字以内で1つ作成してください。`
+
+  console.log('プロンプト:', prompt)
+  return prompt
 }
 
 async function schedulePostsForUsers() {
@@ -64,6 +67,8 @@ async function schedulePostsForUsers() {
 
     for (const user of users) {
       let postPrompt = user.next_post_prompt
+      
+      console.log(`ユーザー ${user.user_id} のアカウント設定:`, JSON.stringify(user.account_settings, null, 2))
 
       // If no prompt exists, generate one from account settings
       if (!postPrompt && user.account_settings) {
