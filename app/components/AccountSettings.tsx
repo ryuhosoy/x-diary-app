@@ -20,6 +20,7 @@ export default function AccountSettingsPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -51,11 +52,11 @@ export default function AccountSettingsPage() {
     e.preventDefault();
     
     if (!validateForm()) {
-      toast.error('Please fill in all required fields');
       return;
     }
 
     setIsLoading(true);
+    setIsSuccess(false);
 
     try {
       const response = await fetch('/api/supabase/accountSettings', {
@@ -69,10 +70,17 @@ export default function AccountSettingsPage() {
       if (!response.ok) {
         throw new Error('Failed to save settings');
       }
-
-      toast.success('Settings saved successfully');
+      setIsSuccess(true);
+      // 設定成功後に入力欄をリセット
+      setAccountSettings({
+        name: '',
+        description: '',
+        targetAudience: '',
+        expertise: '',
+        tone: '',
+        topics: ''
+      });
     } catch (error) {
-      toast.error('An error occurred');
       console.error('Error saving settings:', error);
     } finally {
       setIsLoading(false);
@@ -83,6 +91,11 @@ export default function AccountSettingsPage() {
     <div className="flex-1 p-8">
       <div className="w-full">
         <h1 className="text-2xl font-bold mb-8 text-center">Account Settings</h1>
+        {isSuccess && (
+          <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-md text-center">
+            Account settings have been saved successfully!
+          </div>
+        )}
         <Card>
           <CardHeader className="pb-4">
             <CardTitle>Basic Account Settings</CardTitle>
