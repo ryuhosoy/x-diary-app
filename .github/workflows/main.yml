@@ -1,0 +1,27 @@
+name: Analyze Post Potential
+
+on:
+  schedule:
+    - cron: '0 1 * * 5'  # JSTの土曜日10時（UTCで金曜の1時）
+  workflow_dispatch:
+
+jobs:
+  analyze-post-potential:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: pnpm install
+      - name: Run analyze post potential
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node run-analyze-post-potential.mjs
