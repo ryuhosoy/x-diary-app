@@ -6,6 +6,7 @@ import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
 import AnalyticsPage from "./components/Analytics";
 import SettingsPage from "./components/Settings";
+import PostedPostsPage from "./components/PostedPosts";
 import Sidebar from "./components/Sidebar";
 
 export default function Home() {
@@ -34,6 +35,8 @@ export default function Home() {
         return <TemplatesPage />;
       case "schedule":
         return <SchedulePage />;
+      case "posted":
+        return <PostedPostsPage />;
       case "analytics":
         return <AnalyticsPage />;
       case "settings":
