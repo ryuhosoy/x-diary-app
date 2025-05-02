@@ -1,0 +1,27 @@
+name: Improve Post Prompt
+
+on:
+  schedule:
+    - cron: '0 6 * * 6'  # JST土曜15時（UTC土曜6時）
+  workflow_dispatch:
+
+jobs:
+  improve-post-prompt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: pnpm install
+      - name: Run improve post prompt
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node run-improve-post-prompt.mjs
