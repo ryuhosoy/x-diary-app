@@ -34,12 +34,6 @@ export async function GET(req: NextRequest) {
 
       const cookieStore = await cookies();
       
-      cookieStore.set('user_id', userId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax'
-      });
-
       const { data, error } = await supabase.from("users").upsert(
         [
           {
@@ -78,7 +72,7 @@ export async function GET(req: NextRequest) {
 
       //   const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`);
       const response = NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}`
+        `${process.env.NEXT_PUBLIC_APP_URL}?userId=${userId}`
       );
 
     //   const userResponse = await fetch(
