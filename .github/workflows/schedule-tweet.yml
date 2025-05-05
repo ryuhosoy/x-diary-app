@@ -1,4 +1,4 @@
-name: Post Scheduled Tweets
+name: Schedule Post
 
 on:
   schedule:
@@ -25,4 +25,4 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET_KEY: ${{ secrets.TWITTER_API_SECRET_KEY }}
-        run: node run-post-scheduler.mjs
+        run: node run-schedule-post.mjs
