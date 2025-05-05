@@ -20,9 +20,16 @@ export default function PostedPostsPage() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
 
+      const userId = localStorage.getItem('user_id');
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('posted_posts')
         .select('*')
+        .eq('user_id', userId)
         .order('posted_time', { ascending: false });
 
       if (error) {
@@ -37,7 +44,7 @@ export default function PostedPostsPage() {
   }, []);
 
   if (loading) {
-    return <div className="flex-1 p-8 text-center">読み込み中...</div>;
+    return <div className="flex-1 p-8 text-center">Loading...</div>;
   }
 
   return (
