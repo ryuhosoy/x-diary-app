@@ -15,14 +15,30 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    // ログインした時のみ読み込むようにする
+    // Check URL parameters for userId
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlUserId = urlParams.get('userId');
+    
+    if (urlUserId) {
+      // Store userId in localStorage
+      localStorage.setItem('user_id', urlUserId);
+      // Remove userId from URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    // Get userId from localStorage
+    const storedUserId = localStorage.getItem('user_id');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+
+    // Fetch user info if we have a userId
     const fetchUserInfo = async () => {
       try {
         const response = await fetch('/api/user');
         if (response.ok) {
           const data = await response.json();
           console.log("ユーザー情報:", data);
-          setUserId(data.id);
           setUsername(data.username);
         }
       } catch (error) {
@@ -30,18 +46,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    fetchUserInfo();
+    if (storedUserId) {
+      fetchUserInfo();
+    }
   }, []);
 
-  console.log("userId", userId);
-  console.log("username", username);
-
   const setUserInfo = (newUserId: string, newUsername: string) => {
+    localStorage.setItem('user_id', newUserId);
     setUserId(newUserId);
     setUsername(newUsername);
   };
 
   const clearUserInfo = () => {
+    localStorage.removeItem('user_id');
     setUserId(null);
     setUsername(null);
   };

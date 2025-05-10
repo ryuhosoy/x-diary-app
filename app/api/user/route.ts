@@ -30,29 +30,29 @@ export async function GET() {
     // ユーザー情報を取得
     const currentUser = await userClient.currentUserV2();
 
-    if (currentUser.data) {
-      const { data, error } = await supabase.from("users").upsert(
-        [
-          {
-            user_id: currentUser.data.id,
-            username: currentUser.data.username,
-            access_token: accessToken,
-            access_secret: accessSecret,
-          },
-        ],
-        { onConflict: "user_id" }
-      );
+    // if (currentUser.data) {
+    //   const { data, error } = await supabase.from("users").upsert(
+    //     [
+    //       {
+    //         user_id: currentUser.data.id,
+    //         username: currentUser.data.username,
+    //         access_token: accessToken,
+    //         access_secret: accessSecret,
+    //       },
+    //     ],
+    //     { onConflict: "user_id" }
+    //   );
 
-      if (error) {
-        console.error("ユーザー情報の更新エラー:", error);
-      } else {
-        console.log("ユーザー情報の更新成功:", data);
-      }
-    }
+    //   if (error) {
+    //     console.error("ユーザー情報の更新エラー:", error);
+    //   } else {
+    //     console.log("ユーザー情報の更新成功:", data);
+    //   }
+    // }
 
-    console.log("currentUser", currentUser);
+    // console.log("currentUser", currentUser);
 
-    console.log("currentUser.data.id", currentUser.data.id);
+    // console.log("currentUser.data.id", currentUser.data.id);
 
     // const tweets = await userClient.v2.userTimeline(currentUser.data.id, {
     //   exclude: "replies",

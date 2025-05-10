@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import WritePage from "./components/Write";
-import AnalyticsPage from "./components/Analytics";
+import AccountSettingsPage from "./components/AccountSettings";
+import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
-import PremiumPage from "./components/Premium";
+import AnalyticsPage from "./components/Analytics";
 import SettingsPage from "./components/Settings";
+import PostedPostsPage from "./components/PostedPosts";
 import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
-  const [currentPage, setCurrentPage] = useState("write");
+  const [currentPage, setCurrentPage] = useState("persona");
 
   // const { userId, username, clearUserInfo } = useUser();
 
@@ -28,18 +29,20 @@ export default function Home() {
 
   const renderContent = () => {
     switch (currentPage) {
-      case "write":
-        return <WritePage />;
-      case "analytics":
-        return <AnalyticsPage />;
+      case "persona":
+        return <AccountSettingsPage />;
+      case "templates":
+        return <TemplatesPage />;
       case "schedule":
         return <SchedulePage />;
-      case "premium":
-        return <PremiumPage />;
+      case "posted":
+        return <PostedPostsPage />;
+      case "analytics":
+        return <AnalyticsPage />;
       case "settings":
         return <SettingsPage />;
       default:
-        return <WritePage />;
+        return <AccountSettingsPage />;
     }
   };
 
@@ -56,7 +59,9 @@ export default function Home() {
           showSidebar ? "ml-64" : "ml-20"
         } transition-all duration-300`}
       >
-        <main>{renderContent()}</main>
+        <main className="h-full">
+          {renderContent()}
+        </main>
       </div>
     </div>
   );

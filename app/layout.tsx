@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <UserProvider>
-          <div className="min-h-screen bg-gray-50 flex">{children}</div>
+          <div className="min-h-screen bg-gray-50">{children}</div>
         </UserProvider>
       </body>
     </html>

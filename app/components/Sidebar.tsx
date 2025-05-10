@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Menu, Edit3, TrendingUp, Clock, Star, Settings, LogOut } from 'lucide-react';
+import { Menu, Edit3, TrendingUp, Clock, Star, Settings, LogOut, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 type SidebarProps = {
   showSidebar: boolean;
@@ -18,10 +18,11 @@ export default function Sidebar({
 }: SidebarProps) {
   const router = useRouter();
   const links = [
-    { id: 'write', label: 'Write Diary', icon: Edit3 },
+    { id: 'persona', label: 'Account Settings', icon: Edit3 },
+    { id: 'templates', label: 'Post Templates', icon: FileText },
+    { id: 'schedule', label: 'Post Schedule', icon: Clock },
+    { id: 'posted', label: 'Posted Posts', icon: FileText },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-    { id: 'schedule', label: 'Schedule', icon: Clock },
-    { id: 'premium', label: 'Premium', icon: Star },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 

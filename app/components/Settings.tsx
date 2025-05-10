@@ -8,8 +8,8 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8">Settings</h2>
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-8 text-center">Settings</h2>
 
         {/* Account Settings */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
