@@ -104,7 +104,7 @@ async function schedulePostsForUsers() {
 
       // Calculate scheduled time (e.g., 3 hours from now)
       const scheduledTime = new Date()
-      scheduledTime.setHours(scheduledTime.getHours() + 3)
+      scheduledTime.setHours(scheduledTime.getHours())
 
       // Insert scheduled post
       const { error: insertError } = await supabase
