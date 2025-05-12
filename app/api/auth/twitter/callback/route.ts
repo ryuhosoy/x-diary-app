@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
 
       const cookieStore = await cookies();
       
-      const { data, error } = await supabase.from("users").upsert(
+      const { error } = await supabase.from("users").upsert(
         [
           {
             user_id: userId,

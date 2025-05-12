@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AccountSettingsPage from "./components/AccountSettings";
 import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";

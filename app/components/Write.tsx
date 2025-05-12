@@ -110,7 +110,7 @@ export default function WritePage() {
         // ユニークなファイル名を生成（タイムスタンプを追加）
         const fileName = `${userId}/${Date.now()}-${sanitizedFileName}`;
         
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('post-images')
           .upload(fileName, selectedImage);
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { MessageCircle, Heart, UserPlus, Share2 } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { supabase } from "@/app/utils/supabase";
-import { useUser } from "../context/UserContext";
 
 interface NotificationsDropdownProps {
   isOpen: boolean;
@@ -12,7 +11,7 @@ interface NotificationsDropdownProps {
 interface Notification {
   id: number | string;
   type: string;
-  icon: React.ReactNode
+  icon: React.ReactNode;
   message: string;
   time: string;
   is_read_in_notifications: boolean;
@@ -25,29 +24,29 @@ export default function NotificationsDropdown({
 }: NotificationsDropdownProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-    // リアルタイムで通知が追加されたらfetchInitialDataを呼び出し再度レンダリングする
+  // リアルタイムで通知が追加されたらfetchInitialDataを呼び出し再度レンダリングする
 
   console.log("userId in notifications", userId);
 
   const fetchInitialData = async () => {
     const { data, error } = await supabase
-      .from('posted_posts')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+      .from("posted_posts")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('データの取得に失敗しました:', error);
+      console.error("データの取得に失敗しました:", error);
       return;
     }
 
-    const formattedNotifications = data.map(post => ({
+    const formattedNotifications = data.map((post) => ({
       id: post.id,
       type: "post",
       icon: <MessageCircle size={16} className="text-blue-500" />,
       message: `The tweet "${post.post_content}" has been posted.`,
       time: new Date(post.created_at).toLocaleString(),
-      is_read_in_notifications: post.is_read_in_notifications
+      is_read_in_notifications: post.is_read_in_notifications,
     }));
 
     setNotifications(formattedNotifications);
@@ -76,11 +75,11 @@ export default function NotificationsDropdown({
           // 新しい通知を追加
           const newNotification = {
             id: Date.now(),
-            type: "post", 
+            type: "post",
             icon: <MessageCircle size={16} className="text-blue-500" />,
             message: `「${payload.new.post_content}」が投稿されました`,
             time: new Date().toLocaleString(),
-            is_read_in_notifications: false
+            is_read_in_notifications: false,
           };
 
           setNotifications((prev) => [newNotification, ...prev]);
@@ -108,17 +107,19 @@ export default function NotificationsDropdown({
     try {
       // posted_postsテーブルの全ての通知を既読に更新
       const { error } = await supabase
-        .from('posted_posts')
+        .from("posted_posts")
         .update({ is_read_in_notifications: true })
-        .eq('is_read_in_notifications', false)
-        .eq('user_id', userId);
+        .eq("is_read_in_notifications", false)
+        .eq("user_id", userId);
 
       if (error) throw error;
 
       // ローカルの通知状態も更新
-      setNotifications(prev => prev.map(n => ({ ...n, is_read_in_notifications: true })));
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_read_in_notifications: true }))
+      );
     } catch (error) {
-      console.error('通知の一括既読更新に失敗しました:', error);
+      console.error("通知の一括既読更新に失敗しました:", error);
     }
   };
 
@@ -142,16 +143,22 @@ export default function NotificationsDropdown({
             <div
               key={notification.id}
               className={`p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer ${
-                !notification.is_read_in_notifications ? 'bg-blue-50' : ''
+                !notification.is_read_in_notifications ? "bg-blue-50" : ""
               }`}
               onClick={async () => {
                 // 通知を既読にする
-                const { data, error } = await supabase
-                  .from('posted_posts')
+                await supabase
+                  .from("posted_posts")
                   .update({ is_read_in_notifications: true })
-                  .eq('id', notification.id);
+                  .eq("id", notification.id);
 
-                setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, is_read_in_notifications: true } : n));
+                setNotifications((prev) =>
+                  prev.map((n) =>
+                    n.id === notification.id
+                      ? { ...n, is_read_in_notifications: true }
+                      : n
+                  )
+                );
 
                 console.log("notification.id", notification.id);
                 console.log("notification are read");
@@ -163,7 +170,13 @@ export default function NotificationsDropdown({
                   <MessageCircle size={16} className="text-blue-500" />
                 </div>
                 <div className="flex-1">
-                  <p className={`text-sm ${!notification.is_read_in_notifications ? 'font-semibold text-gray-900' : 'text-gray-800'}`}>
+                  <p
+                    className={`text-sm ${
+                      !notification.is_read_in_notifications
+                        ? "font-semibold text-gray-900"
+                        : "text-gray-800"
+                    }`}
+                  >
                     {notification.message}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { TwitterApi } from "twitter-api-v2";
 import { cookies } from "next/headers";
-import { supabase } from "@/app/utils/supabase";
 
 export async function GET() {
   try {
