@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Menu, Edit3, TrendingUp, Clock, Settings, LogOut, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 type SidebarProps = {
   showSidebar: boolean;
   setShowSidebar: (show: boolean) => void;
