@@ -20,11 +20,11 @@ export default function Sidebar({
   const router = useRouter();
   const links = [
     { id: 'persona', label: 'Account Settings', icon: Edit3 },
-    { id: 'templates', label: 'Post Templates', icon: FileText },
-    { id: 'schedule', label: 'Post Schedule', icon: Clock },
+    // { id: 'templates', label: 'Post Templates', icon: FileText },
+    // { id: 'schedule', label: 'Post Schedule', icon: Clock },
     { id: 'posted', label: 'Posted Posts', icon: FileText },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    // { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+    // { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
   const handleLogout = async () => {
