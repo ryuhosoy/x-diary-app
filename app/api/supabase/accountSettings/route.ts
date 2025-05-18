@@ -6,6 +6,7 @@ export async function POST(request: Request) {
   try {
     // リクエストボディを取得
     const accountSettings = await request.json();
+    console.log("accountSettings", accountSettings);
 
     // 必須フィールドの検証
     const requiredFields = ['name', 'description', 'targetAudience', 'expertise', 'tone', 'topics'];
