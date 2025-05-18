@@ -28,16 +28,19 @@ export default function Sidebar({
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+      await fetch('/api/auth/logout', {
+        method: 'GET',
       });
+      // const response = await fetch('/api/auth/logout', {
+      //   method: 'POST',
+      // });
 
-      if (response.ok) {
-        // ログアウト成功時の処理
-        router.push("/login");
-      } else {
-        console.error('ログアウトに失敗しました');
-      }
+      // if (response.ok) {
+      //   // ログアウト成功時の処理
+      //   router.push("/login");
+      // } else {
+      //   console.error('ログアウトに失敗しました');
+      // }
     } catch (error) {
       console.error('ログアウトエラー:', error);
     }
