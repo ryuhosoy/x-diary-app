@@ -1,14 +1,12 @@
 // import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { NextResponse } from 'next/server';
+
 export async function GET() {
   // クッキーを削除
   const cookieStore = await cookies();
   cookieStore.delete('accessToken');
   cookieStore.delete('accessSecret');
   
-  // const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/login`);
-  redirect(`https://x-diary-app.vercel.app/login`);
-
-  // return response;
+  return NextResponse.json({ success: true });
 }
