@@ -66,7 +66,11 @@ export async function GET() {
     //   console.log("tweets/search/recent", tweets);
     // }
 
-    return NextResponse.json(currentUser.data);
+    return NextResponse.json({
+      ...currentUser.data,
+      accessToken,
+      accessSecret
+    });
   } catch (error) {
     console.error("ユーザー情報取得エラー in /api/user:", error);
     return NextResponse.json(

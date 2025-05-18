@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AccountSettingsPage from "./components/AccountSettings";
 import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
@@ -10,22 +11,22 @@ import PostedPostsPage from "./components/PostedPosts";
 import Sidebar from "./components/Sidebar";
 
 export default function Home() {
+  const router = useRouter();
   const [showSidebar, setShowSidebar] = useState(true);
   const [currentPage, setCurrentPage] = useState("persona");
 
-  // const { userId, username, clearUserInfo } = useUser();
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await fetch('/api/user');
+      const data = await response.json();
+      
+      if (!data.accessToken || !data.accessSecret) {
+        router.push('/login');
+      }
+    };
 
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
-
-  // const getUser = async () => {
-  //   const userResponse = await fetch(
-  //     `${process.env.NEXT_PUBLIC_APP_URL}/api/user`
-  //   );
-  //   const userData = await userResponse.json();
-  //   console.log("ログインユーザー情報:", userData);
-  // };
+    checkAuth();
+  }, [router]);
 
   const renderContent = () => {
     switch (currentPage) {
