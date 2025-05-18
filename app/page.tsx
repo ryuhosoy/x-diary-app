@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+// import { useRouter } from "next/navigation";
 import AccountSettingsPage from "./components/AccountSettings";
 import TemplatesPage from "./components/Templates";
 import SchedulePage from "./components/Schedule";
@@ -11,22 +11,22 @@ import PostedPostsPage from "./components/PostedPosts";
 import Sidebar from "./components/Sidebar";
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
   const [showSidebar, setShowSidebar] = useState(true);
   const [currentPage, setCurrentPage] = useState("persona");
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const response = await fetch('/api/user');
-      const data = await response.json();
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const response = await fetch('/api/user');
+  //     const data = await response.json();
       
-      if (!data.accessToken || !data.accessSecret) {
-        router.push('/login');
-      }
-    };
+  //     if (!data.accessToken || !data.accessSecret) {
+  //       router.push('/login');
+  //     }
+  //   };
 
-    checkAuth();
-  }, [router]);
+  //   checkAuth();
+  // }, [router]);
 
   const renderContent = () => {
     switch (currentPage) {
