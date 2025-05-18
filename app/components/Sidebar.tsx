@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { Menu, Edit3, TrendingUp, Clock, Settings, LogOut, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+// 
+
+
 type SidebarProps = {
   showSidebar: boolean;
   setShowSidebar: (show: boolean) => void;
@@ -16,7 +18,7 @@ export default function Sidebar({
   currentPage,
   setCurrentPage
 }: SidebarProps) {
-  const router = useRouter();
+  // const router = useRouter();
   const links = [
     { id: 'persona', label: 'Account Settings', icon: Edit3 },
     { id: 'templates', label: 'Post Templates', icon: FileText },
@@ -34,7 +36,7 @@ export default function Sidebar({
       // const response = await fetch('/api/auth/logout', {
       //   method: 'POST',
       // });
-      router.push("/login");
+      // router.push("/login");
 
       // if (response.ok) {
       //   // ログアウト成功時の処理
