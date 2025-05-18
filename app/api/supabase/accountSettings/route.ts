@@ -24,7 +24,10 @@ export async function POST(request: Request) {
     // ユーザーのアカウント設定を更新
     const { error: updateError } = await supabase
       .from('users')
-      .update({
+      // .update({
+      //   account_settings: accountSettings,
+      // })
+      .upsert({
         account_settings: accountSettings,
       })
       .eq('user_id', user_id);
