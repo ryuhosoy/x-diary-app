@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Menu, Edit3, TrendingUp, Clock, Settings, LogOut, FileText } from 'lucide-react';
+// import { Menu, Edit3, TrendingUp, Clock, Settings, LogOut, FileText } from 'lucide-react';
+import { Menu, Edit3, LogOut, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type SidebarProps = {
