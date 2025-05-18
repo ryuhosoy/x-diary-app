@@ -16,7 +16,7 @@ export default function Sidebar({
   currentPage,
   setCurrentPage
 }: SidebarProps) {
-  const router = useRouter();
+  // const router = useRouter();
   const links = [
     { id: 'persona', label: 'Account Settings', icon: Edit3 },
     { id: 'templates', label: 'Post Templates', icon: FileText },
