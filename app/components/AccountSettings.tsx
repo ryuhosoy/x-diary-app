@@ -66,6 +66,8 @@ export default function AccountSettingsPage() {
         body: JSON.stringify(accountSettings),
       });
 
+      console.log("settings response", response);
+
       if (!response.ok) {
         throw new Error('Failed to save settings');
       }
