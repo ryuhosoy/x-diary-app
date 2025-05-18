@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FileText, Calendar, MessageCircle, Heart, Share2 } from 'lucide-react';
+// import { FileText, Calendar, MessageCircle, Heart, Share2 } from 'lucide-react';
+import { FileText, Calendar } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 interface Post {
