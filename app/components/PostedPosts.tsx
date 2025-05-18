@@ -75,7 +75,7 @@ export default function PostedPostsPage() {
               </p>
               
               <div className="flex items-center space-x-6 text-gray-600">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <MessageCircle size={16} className="mr-1" />
                   <span>128</span>
                 </div>
@@ -86,7 +86,7 @@ export default function PostedPostsPage() {
                 <div className="flex items-center">
                   <Share2 size={16} className="mr-1" />
                   <span>458</span>
-                </div>
+                </div> */}
               </div>
             </div>
           ))}
