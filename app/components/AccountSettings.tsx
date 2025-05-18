@@ -57,6 +57,8 @@ export default function AccountSettingsPage() {
     setIsLoading(true);
     setIsSuccess(false);
 
+    console.log("accountSettings", accountSettings);
+
     try {
       const response = await fetch('/api/supabase/accountSettings', {
         method: 'POST',
