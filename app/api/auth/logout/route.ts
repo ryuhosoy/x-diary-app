@@ -7,6 +7,7 @@ export async function GET() {
   const cookieStore = await cookies();
   cookieStore.delete('accessToken');
   cookieStore.delete('accessSecret');
+  cookieStore.delete('user_id');
   
   return NextResponse.json({ success: true });
 }

@@ -64,6 +64,13 @@ export async function GET(req: NextRequest) {
         // maxAge: 60 * 60 * 24 // 24時間
       });
 
+      cookieStore.set('user_id', userId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax', 
+        // maxAge: 60 * 60 * 24 // 24時間
+      });
+
       console.log('accessToken in callback', accessToken);
       console.log('accessSecret in callback', accessSecret);
 
