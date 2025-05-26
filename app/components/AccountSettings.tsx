@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Bell } from 'lucide-react';
+import NotificationsDropdown from './NotificationsDropdown';
+import { useUser } from '../context/UserContext';
+import { supabase } from '@/app/utils/supabase';
 
 export default function AccountSettingsPage() {
   const [accountSettings, setAccountSettings] = useState({
@@ -16,10 +20,55 @@ export default function AccountSettingsPage() {
     tone: '',
     topics: ''
   });
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const { userId } = useUser();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    // 初期状態のチェック
+    checkUnreadNotifications();
+
+    // リアルタイムリスナーの設定
+    const changes = supabase
+      .channel("posted_posts")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          event: "*",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log("投稿の変更が検出されました:", payload);
+          checkUnreadNotifications(); // 変更があったら未読状態を再チェック
+        }
+      )
+      .subscribe();
+
+    return () => {
+      changes.unsubscribe();
+    };
+  }, [userId]);
+
+  const checkUnreadNotifications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("posted_posts")
+        .select("is_read_in_notifications")
+        .eq("is_read_in_notifications", false)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      setHasUnreadNotifications(data && data.length > 0);
+    } catch (error) {
+      console.error("未読通知のチェック中にエラーが発生しました:", error);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -93,7 +142,25 @@ export default function AccountSettingsPage() {
   return (
     <div className="flex-1 p-8">
       <div className="w-full">
-        <h1 className="text-2xl font-bold mb-8 text-center">Account Settings</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold text-center">Account Settings</h1>
+          <div className="relative">
+            <button 
+              className="p-2 relative hover:bg-gray-100 rounded-full"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <Bell size={24} />
+              {hasUnreadNotifications && (
+                <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              )}
+            </button>
+            <NotificationsDropdown 
+              isOpen={showNotifications} 
+              onClose={() => setShowNotifications(false)} 
+              userId={userId || ''}
+            />
+          </div>
+        </div>
         {isSuccess && (
           <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-md text-center">
             Account settings have been saved successfully!

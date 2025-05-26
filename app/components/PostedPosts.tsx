@@ -1,8 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 // import { FileText, Calendar, MessageCircle, Heart, Share2 } from 'lucide-react';
-import { FileText, Calendar } from 'lucide-react';
+import { FileText, Calendar, Bell } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
+import NotificationsDropdown from './NotificationsDropdown';
+import { useUser } from '../context/UserContext';
+import { supabase } from '@/app/utils/supabase';
 
 interface Post {
   user_id: string;
@@ -13,6 +16,51 @@ interface Post {
 export default function PostedPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const { userId } = useUser();
+
+  useEffect(() => {
+    // 初期状態のチェック
+    checkUnreadNotifications();
+
+    // リアルタイムリスナーの設定
+    const changes = supabase
+      .channel("posted_posts")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          event: "*",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log("投稿の変更が検出されました:", payload);
+          checkUnreadNotifications(); // 変更があったら未読状態を再チェック
+        }
+      )
+      .subscribe();
+
+    return () => {
+      changes.unsubscribe();
+    };
+  }, [userId]);
+
+  const checkUnreadNotifications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("posted_posts")
+        .select("is_read_in_notifications")
+        .eq("is_read_in_notifications", false)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      setHasUnreadNotifications(data && data.length > 0);
+    } catch (error) {
+      console.error("未読通知のチェック中にエラーが発生しました:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -51,7 +99,25 @@ export default function PostedPostsPage() {
   return (
     <div className="flex-1 p-8">
       <div className="w-full">
-        <h2 className="text-2xl font-bold mb-8 text-center">Posted Posts</h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-center">Posted Posts</h2>
+          <div className="relative">
+            <button 
+              className="p-2 relative hover:bg-gray-100 rounded-full"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <Bell size={24} />
+              {hasUnreadNotifications && (
+                <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              )}
+            </button>
+            <NotificationsDropdown 
+              isOpen={showNotifications} 
+              onClose={() => setShowNotifications(false)} 
+              userId={userId || ''}
+            />
+          </div>
+        </div>
         
         <div className="space-y-6">
           {posts.map((post, index) => (
