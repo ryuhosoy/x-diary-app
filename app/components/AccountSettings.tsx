@@ -140,13 +140,13 @@ export default function AccountSettingsPage() {
   };
 
   return (
-    <div className="flex-1 p-8">
-      <div className="w-full">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-center">Account Settings</h1>
+    <div className="flex-1 p-4 sm:p-6 md:p-8">
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-center sm:text-left">Account Settings</h1>
           <div className="relative">
             <button 
-              className="p-2 relative hover:bg-gray-100 rounded-full"
+              className="p-2 relative hover:bg-gray-100 rounded-full transition-colors"
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <Bell size={24} />
@@ -162,101 +162,101 @@ export default function AccountSettingsPage() {
           </div>
         </div>
         {isSuccess && (
-          <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-md text-center">
+          <div className="mb-6 p-3 sm:p-4 bg-green-100 text-green-700 rounded-md text-center text-sm sm:text-base">
             Account settings have been saved successfully!
           </div>
         )}
-        <Card>
+        <Card className="w-full">
           <CardHeader className="pb-4">
-            <CardTitle>Basic Account Settings</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">Basic Account Settings</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Account Character *</Label>
+                  <Label htmlFor="name" className="text-sm sm:text-base">Account Character *</Label>
                   <Input
                     id="name"
                     value={accountSettings.name}
                     onChange={(e) => setAccountSettings({ ...accountSettings, name: e.target.value })}
                     placeholder="e.g., Programming Learning Journey"
-                    className={errors.name ? 'border-red-500' : ''}
+                    className={`text-sm sm:text-base ${errors.name ? 'border-red-500' : ''}`}
                   />
-                  {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                  {errors.name && <p className="text-xs sm:text-sm text-red-500">{errors.name}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="targetAudience">Target Audience *</Label>
+                  <Label htmlFor="targetAudience" className="text-sm sm:text-base">Target Audience *</Label>
                   <Input
                     id="targetAudience"
                     value={accountSettings.targetAudience}
                     onChange={(e) => setAccountSettings({ ...accountSettings, targetAudience: e.target.value })}
                     placeholder="e.g., Programming Beginners, 20s Engineers"
-                    className={errors.targetAudience ? 'border-red-500' : ''}
+                    className={`text-sm sm:text-base ${errors.targetAudience ? 'border-red-500' : ''}`}
                   />
-                  {errors.targetAudience && <p className="text-sm text-red-500">{errors.targetAudience}</p>}
+                  {errors.targetAudience && <p className="text-xs sm:text-sm text-red-500">{errors.targetAudience}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="expertise">Expertise *</Label>
+                  <Label htmlFor="expertise" className="text-sm sm:text-base">Expertise *</Label>
                   <Input
                     id="expertise"
                     value={accountSettings.expertise}
                     onChange={(e) => setAccountSettings({ ...accountSettings, expertise: e.target.value })}
                     placeholder="e.g., Web Development, AI, Cloud Technology"
-                    className={errors.expertise ? 'border-red-500' : ''}
+                    className={`text-sm sm:text-base ${errors.expertise ? 'border-red-500' : ''}`}
                   />
-                  {errors.expertise && <p className="text-sm text-red-500">{errors.expertise}</p>}
+                  {errors.expertise && <p className="text-xs sm:text-sm text-red-500">{errors.expertise}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="tone">Posting Style *</Label>
+                  <Label htmlFor="tone" className="text-sm sm:text-base">Posting Style *</Label>
                   <Input
                     id="tone"
                     value={accountSettings.tone}
                     onChange={(e) => setAccountSettings({ ...accountSettings, tone: e.target.value })}
                     placeholder="e.g., Friendly, Professional and Polite"
-                    className={errors.tone ? 'border-red-500' : ''}
+                    className={`text-sm sm:text-base ${errors.tone ? 'border-red-500' : ''}`}
                   />
-                  {errors.tone && <p className="text-sm text-red-500">{errors.tone}</p>}
+                  {errors.tone && <p className="text-xs sm:text-sm text-red-500">{errors.tone}</p>}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Account Description *</Label>
+                <Label htmlFor="description" className="text-sm sm:text-base">Account Description *</Label>
                 <Textarea
                   id="description"
                   value={accountSettings.description}
                   onChange={(e) => setAccountSettings({ ...accountSettings, description: e.target.value })}
                   placeholder="Describe your account's background, values, and goals"
                   rows={4}
-                  className={errors.description ? 'border-red-500' : ''}
+                  className={`text-sm sm:text-base ${errors.description ? 'border-red-500' : ''}`}
                 />
-                {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+                {errors.description && <p className="text-xs sm:text-sm text-red-500">{errors.description}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="topics">Post Topics *</Label>
+                <Label htmlFor="topics" className="text-sm sm:text-base">Post Topics *</Label>
                 <Textarea
                   id="topics"
                   value={accountSettings.topics}
                   onChange={(e) => setAccountSettings({ ...accountSettings, topics: e.target.value })}
                   placeholder="Enter post topics separated by commas"
                   rows={3}
-                  className={errors.topics ? 'border-red-500' : ''}
+                  className={`text-sm sm:text-base ${errors.topics ? 'border-red-500' : ''}`}
                 />
-                {errors.topics && <p className="text-sm text-red-500">{errors.topics}</p>}
+                {errors.topics && <p className="text-xs sm:text-sm text-red-500">{errors.topics}</p>}
               </div>
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full text-sm sm:text-base py-2 sm:py-3" 
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      className="animate-spin -ml-1 mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
