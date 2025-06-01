@@ -12,7 +12,7 @@ import Sidebar from "./components/Sidebar";
 
 export default function Home() {
   // const router = useRouter();
-  const [showSidebar, setShowSidebar] = useState(true);
+  // const [showSidebar, setShowSidebar] = useState(true);
   const [currentPage, setCurrentPage] = useState("persona");
 
   // useEffect(() => {
