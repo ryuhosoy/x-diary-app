@@ -97,8 +97,8 @@ export default function PostedPostsPage() {
   }
 
   return (
-    <div className="flex-1 p-4 sm:p-6 md:p-8">
-      <div className="w-full max-w-4xl mx-auto">
+    <div className="flex-1 pr-4 pt-4 pb-4 sm:pr-6 sm:pt-6 sm:pb-6 md:pr-8 md:pt-8 md:pb-8">
+      <div className="w-full">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-center sm:text-left">Posted Posts</h2>
           <div className="relative">
