@@ -50,15 +50,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar
-        showSidebar={showSidebar}
-        setShowSidebar={setShowSidebar}
+        // showSidebar={showSidebar}
+        // setShowSidebar={setShowSidebar}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
       <div
-        className={`flex-1 ${
-          showSidebar ? "ml-64" : "ml-20"
-        } transition-all duration-300`}
+        className={`flex-1 ml-16`}
       >
         <main className="h-full">
           {renderContent()}

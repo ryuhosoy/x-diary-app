@@ -192,7 +192,7 @@ export default function AccountSettingsPage() {
   };
 
   return (
-    <div className="flex-1 pr-4 pt-4 pb-4 sm:pr-6 sm:pt-6 sm:pb-6 md:pr-8 md:pt-8 md:pb-8">
+    <div className="flex-1 px-8 py-4 sm:px-12 sm:py-6 md:px-16 md:py-8">
       <div className="w-full">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           <h1 className="text-xl sm:text-2xl font-bold text-center sm:text-left">Account Settings</h1>
