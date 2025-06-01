@@ -2,19 +2,15 @@
 
 import React from 'react';
 // import { Menu, Edit3, TrendingUp, Clock, Settings, LogOut, FileText } from 'lucide-react';
-import { Menu, Edit3, LogOut, FileText } from 'lucide-react';
+import { Edit3, LogOut, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type SidebarProps = {
-  showSidebar: boolean;
-  setShowSidebar: (show: boolean) => void;
   currentPage: string;
   setCurrentPage: (page: string) => void;
 };
 
 export default function Sidebar({
-  showSidebar,
-  setShowSidebar,
   currentPage,
   setCurrentPage
 }: SidebarProps) {
@@ -46,38 +42,33 @@ export default function Sidebar({
   };
 
   return (
-    <div className={`${showSidebar ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 p-4 transition-all duration-300 h-screen fixed`}>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className={`font-bold text-xl ${!showSidebar && 'hidden'}`}>X Diary</h1>
-        <button 
-          onClick={() => setShowSidebar(!showSidebar)} 
-          className="p-2 hover:bg-gray-100 rounded-lg"
-        >
-          <Menu size={20} />
-        </button>
+    <div className="bg-white border-r border-gray-200 h-screen fixed w-16 flex flex-col items-center py-4">
+      <div className="mb-8">
+        <h1 className="font-bold text-xl">X</h1>
       </div>
       
-      <nav className="space-y-2">
+      <nav className="flex-1 flex flex-col items-center space-y-4">
         {links.map((link) => (
           <button
             key={link.id}
             onClick={() => setCurrentPage(link.id)}
-            className={`w-full flex items-center p-3 rounded-lg ${
-              currentPage === link.id ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100'
+            className={`p-3 rounded-lg transition-colors ${
+              currentPage === link.id ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
             }`}
+            title={link.label}
           >
-            <link.icon size={20} />
-            {showSidebar && <span className="ml-3">{link.label}</span>}
+            <link.icon size={24} />
           </button>
         ))}
       </nav>
 
-      <div className="absolute bottom-4 space-y-2 w-full pr-4">
-        <button className="w-full flex items-center p-3 rounded-lg hover:bg-gray-100 text-red-600" onClick={handleLogout}>
-          <LogOut size={20} />
-          {showSidebar && <span className="ml-3">Logout</span>}
-        </button>
-      </div>
+      <button 
+        className="p-3 rounded-lg text-red-600 hover:bg-gray-100 transition-colors"
+        onClick={handleLogout}
+        title="Logout"
+      >
+        <LogOut size={24} />
+      </button>
     </div>
   );
 }
