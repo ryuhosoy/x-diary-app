@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# X-Bot Creator
 
-## Getting Started
+X-Bot Creatorは、X（旧Twitter）の運用を完全自動化するためのツールです。テーマごとに特化した自動発信アカウントを作成し、運用コストを削減しながら、効果的なコンテンツ配信を実現します。
 
-First, run the development server:
+## 主な機能
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔐 ログイン/ログアウト機能
+- ⏰ 投稿時間の設定と予約投稿
+- 🤖 ペルソナに基づく自動投稿生成
+- 🔔 投稿通知機能
+- 🎯 テーマ別アカウント管理
+  - エンジニア向け技術情報
+  - 健康関連情報
+  - 副業・ビジネス情報
+  - その他カスタマイズ可能
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 技術スタック
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **フロントエンド/バックエンド**: Next.js
+- **データベース**: Supabase
+- **定期実行**: GitHub Actions
+- **AI**: OpenAI API
+- **X API**: node-twitter-api-v2
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 使用方法
 
-## Learn More
+1. アカウント設定
+   - アカウントの性格設定
+   - ターゲット層の設定
+   - 発信分野の選択
+   - 投稿スタイルの設定
+   - アカウント概要の作成
+   - 投稿トピックの設定
 
-To learn more about Next.js, take a look at the following resources:
+2. 投稿予約
+   - 投稿時間の設定
+   - コンテンツの確認
+   - 予約の確定
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. 自動運用
+   - ペルソナに基づく自動投稿生成
+   - 通知の受信設定
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## メリット
 
-## Deploy on Vercel
+- 🚀 ネタ切れ防止
+- 💰 運用コストの削減
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ターゲットユーザー
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- X運用を自動化したいインフルエンサー
