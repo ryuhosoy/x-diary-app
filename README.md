@@ -2,6 +2,8 @@
 
 x diaryは、X（旧Twitter）の運用を完全自動化するためのツールです。テーマごとに特化した自動発信アカウントを作成し、運用コストを削減しながら、効果的なコンテンツ配信を実現します。
 
+🚀 **URLはこちら**: [https://x-diary-app.vercel.app](https://x-diary-app.vercel.app)
+
 ## 主な機能
 
 - 🔐 ログイン/ログアウト機能
