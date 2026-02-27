@@ -1,22 +1,18 @@
 import { supabase } from "@/app/utils/supabase";
 import { cookies } from "next/headers";
 import { NextResponse } from 'next/server';
+import { validateAccountSettings } from '@/app/lib/validation';
 
 export async function POST(request: Request) {
   try {
-    // リクエストボディを取得
     const accountSettings = await request.json();
-    console.log("accountSettings", accountSettings);
 
-    // 必須フィールドの検証
-    const requiredFields = ['name', 'description', 'targetAudience', 'expertise', 'tone', 'topics'];
-    for (const field of requiredFields) {
-      if (!accountSettings[field]?.trim()) {
-        return NextResponse.json(
-          { error: `${field}は必須です` },
-          { status: 400 }
-        );
-      }
+    const validation = validateAccountSettings(accountSettings);
+    if (!validation.valid) {
+      return NextResponse.json(
+        { error: `${validation.field}は必須です` },
+        { status: 400 }
+      );
     }
 
     const cookieStore = await cookies();
